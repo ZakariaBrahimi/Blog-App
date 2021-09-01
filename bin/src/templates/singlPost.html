@@ -1,0 +1,177 @@
+{% extends 'base.html'%}
+{% load social_share %}
+
+{%block content%}
+    <article class="h-5/6 w-4/6 m-auto	my-12 flex flex-col gap-6 bg-white p-6 shadow-lg rounded-lg">
+        <img src="{{post.img.url}}" alt="">
+        <h2 class="mb-1 text-2xl">{{post.title}}</h2>
+        <div class="flex justify-between items-baseline">
+          
+        <div class="text-gray-500 flex items-center">
+            <span class="">
+                <a href=" {% url 'blog:user_profile' post.user.id %} ">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {{post.user}}
+                </a>
+            </span>
+            <span class="px-3">/</span>   
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {{post.published_at}}
+            </span>
+        </div>
+        <div>
+          <div class="flex items-baseline">
+            <a href="{% url 'blog:edit_post' post.slug post.id %}" class="shadow-lg bg-blue-600 text-white font-bold p-2 rounded-lg px-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              Edit
+            </a>
+  
+  
+  
+            <div class="">
+              <a href="{% url 'blog:delete_post' post.slug post.id %}">
+                <button
+
+                class="bg-red-600 font-semibold text-white p-2 rounded-full hover:bg-red-700 focus:outline-none focus:ring shadow-lg hover:shadow-none transition-all duration-300 m-2"
+              >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              </button>
+              </a>
+      
+            </div>
+          </div>
+        </div>
+        </div>
+        <p>{{post.content}}</p>
+        <div class="w-full border-b pb-5 border-gray-400    ">
+            Share Post: 
+            {% post_to_facebook object_or_url %} | 
+            {% post_to_twitter "{{post.title}}" object_or_url %}
+        </div>
+
+
+<!--COMMENT SECTION-->
+        <!-- component -->
+<div class="antialiased comments-list">
+    <h3 class="mb-4 text-lg font-semibold text-gray-900">Comments:</h3>
+  
+    <div class="space-y-4 ">
+  
+      {% for comment in comments %}
+        <div class="flex ">
+        <div class="flex-shrink-0 mr-3 ">
+          <img class="mt-2 rounded-full w-8 h-8 sm:w-10 sm:h-10" src="{{comment.user_id.img.url}}" alt="">
+        </div>
+        <div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed shadow-lg">
+          <strong>{{comment.user_id}}</strong> <span class="text-xs text-gray-400">{{comment.date}}</span>
+          <p class="text-sm">
+            {{comment.content}}
+          </p>
+          
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+<!-- comment form -->
+<div class="flex  items-center justify-center shadow-lg my-4 ">
+
+    <form method='POST' class="w-full max-w-4xl bg-white rounded-lg px-4 pt-2" id='commentForm'>
+      {% csrf_token %}
+       <div class="flex flex-wrap -mx-3 mb-6">
+          <h2 class="px-4 pt-3 pb-2 text-gray-800 text-lg">Add a new comment:</h2>
+          <div class="w-full md:w-full px-3 mb-2 mt-2">
+            {{form}}
+
+            
+          </div>
+
+
+
+          <div class="w-full md:w-full flex items-start md:w-full px-3">
+             <div class="-mr-1">
+                <button type='submit' class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100" >
+                  Post Comment
+                </button>
+             </div>
+          </div>
+       </form>
+    </div>
+ </div>
+    </article>
+{%endblock%}
+
+{% block bottom_js%}
+<script>
+  function createComment(formData){
+    console.log("Posting Comment");
+    let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    console.log(csrfValue)
+    fetch("{% url 'blog:singl_post' post.slug post.id %}", {
+      method: "Post",
+      headers: {
+        "X-CSRFToken": csrfValue,
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: formData
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      commentForm.reset();
+      
+      let instance = JSON.parse(data["newComment"]);
+      console.log(instance)
+      let fields = instance[0]["fields"];
+      let commentsList = document.querySelector(".comments-list");
+      // let noCommentFlag= document.querySelector(".no-comment");
+      // if(noCommentFlag) {
+      //   commentsList.removeChild(noCommentFlag);
+      // }
+      commentsList.innerHTML += `
+      <div class="space-y-4 mt-4">
+        <div class="flex ">
+        <div class="flex-shrink-0 mr-3 ">
+          <img class="mt-2 rounded-full w-8 h-8 sm:w-10 sm:h-10" src="{{user.img.url}}" alt="">
+        </div>
+        <div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed shadow-lg">
+          <strong>{{user}} </strong> <span class="text-xs text-gray-400">
+         ${fields['date']}</span>
+          <p class="text-sm">
+            ${fields['content']}
+          </p>
+          
+        </div>
+      </div>
+      </div>
+        
+      `;
+    }).catch((error) => {
+      console.error("Error", error);
+    })
+  }   
+
+  function submitComment(e){
+    e.preventDefault();
+    let content = document.querySelector('#id_content').value;
+    if(content){
+      let formData = new FormData(commentForm);
+      createComment(formData);
+      }else {
+      console.log("You cannot submit an empty form")
+    }
+  }
+  const commentForm = document.querySelector('#commentForm');
+  commentForm.addEventListener('submit', submitComment);
+
+</script>
+{%endblock%}

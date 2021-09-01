@@ -1,0 +1,14 @@
+{
+    "python.analysis.extraPaths": [
+        "./project"
+    ],
+    "sqltools.connections": [
+        {
+            "previewLimit": 500,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:src}/db.sqlite3",
+            "name": "first connection with blog database"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

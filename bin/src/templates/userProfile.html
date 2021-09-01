@@ -1,0 +1,166 @@
+{%extends 'base.html'%}
+{% block content %}
+    <div class="grid grid-cols-3 grid-rows-2 m-auto w-5/6 mt-12 gap-6 mb-10">
+        <section class="bg-white col-start-1 col-end-2 row-start-1 row-end-2 rounded-lg shadow-md
+                        flex flex-col items-center gap-4 justify-center">
+            <img src="{{ author.img.url }}" class="rounded-full w-28 h-28 shadow-lg border-2 p-2" alt="">   
+            <div class="text-2xl">{{author.first_name}} {{author.last_name}} </div>
+            <div class="text-gray-700">{{author.job}}</div>
+            <div class="text-gray-700">{{author.address}}</div>
+            <div class="flex gap-5">
+                <!--
+                    <button class="text-white bg-blue-500 rounded-lg p-2 px-6 shadow-lg box-content hover:shadow-2xl">Follow</button>
+                -->
+                
+                <button class="border-2 border-blue-300 p-2 px-10 rounded-lg shadow-lg hover:bg-blue-500 hover:text-white hover:border-blue-500 transition duration-500 ease-in-out">Follow</button>
+            </div>
+        </section>
+        <section class="bg-white col-start-1 col-end-2 row-start-2 row-end-3 rounded-lg shadow-md flex flex-col justify-center">
+            <div class="flex justify-around py-3 border-b px-6">
+                <div class="w-3/6 ">
+                    <svg class="inline-block" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    Website
+                </div>
+                <a href="" class="text-gray-500">{{author.website_link}}</a>
+            </div>
+            <div class="flex justify-around py-3 border-b">
+                <div class="w-3/6 ">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github mr-2 icon-inline"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    Github
+                </div>
+                <a href="" class="text-gray-500">bootdey</a>
+            </div>
+            <div class="flex justify-around py-3 border-b ">
+                <div class="w-3/6 ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="inline-block text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter mr-2 icon-inline text-info"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                    Twitter
+                </div>
+                <a href="" class="text-gray-500">{{author.twitter_link}}y
+                </a>
+            </div>
+            <div class="flex justify-around py-3 border-b">
+                <div class="w-3/6 ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="inline-block text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram mr-2 icon-inline text-danger"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    Instagram
+                </div>
+                <span href="" class="text-gray-500">{{author.insta_link}}
+                </span>
+            </div>
+            <div class="flex justify-around py-3 ">
+                <div class="w-3/6 ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="inline-block text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook mr-2 icon-inline text-primary"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    Facebook:
+                </div>
+                {{author.fb_link|truncatewords:1}}
+                
+            </div>
+        </section>
+        <section class="bg-white col-start-2 col-end-4  rounded-lg shadow-md px-4">
+            <div class="flex  px-8 py-3 mx-4 border-b-2 ">
+                <div class="text-gray-800 w-3/6">Full Name</div>
+                <div class="text-gray-500">{{author.first_name}}</div>
+            </div>
+            <div class="flex px-8 py-3 mx-4 border-b-2 ">
+                <div class="text-gray-800 w-3/6">Email</div>
+                <div class="text-gray-500">{{author.email}}</div>
+            </div>
+            <div class="flex px-8 py-3 mx-4 border-b-2 ">
+                <div class="text-gray-800 w-3/6">Phone</div>
+                <div class="text-gray-500">0000</div>
+            </div>
+            <div class="flex px-8 py-3 mx-4 border-b-2 ">
+                <div class="text-gray-800 w-3/6">Mobile</div>
+                <div class="text-gray-500">{{author.phone}}</div>
+            </div>
+            <div class="flex px-8 py-3 mx-4  ">
+                <div class="text-gray-800 w-3/6">Address</div>
+                <div class="text-gray-500">{{author.address}}</div>
+            </div>
+            <a href="{% url 'blog:edit_profile' author.id %}">
+              <button type="submit" class="p-2 bg-blue-500 rounded-lg px-5 text-white m-4 ml-10 shadow-lg hover:shadow-2xl">Edit My Profile</button>
+            </a>
+            <a href="{% url 'account_change_password'%}" class="bg-red-500 py-2 rounded-lg px-3 m-4 shadow-lg hover shadow-2xl text-white">
+              Change Password
+            </a>
+            
+        </section>
+        <section class="col-start-2 col-end-4 rounded-lg ">
+<div class="py-5">
+    <main class="h-full overflow-y-auto">
+        <div class="container  mx-auto grid">
+          <!-- Cards -->
+          <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-2 w-full ">
+            <!-- Card -->
+            <div class="flex items-center p-4 bg-white rounded-lg shadow-lg dark:bg-gray-800 hover:shadow-xl">
+              <div class="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full dark:text-orange-100 dark:bg-orange-500">
+                <div class="rounded-full bg-blue-100 p-3 flex justify-center items-center">
+                    <img src="https://img.icons8.com/ios-filled/2x/4a90e2/notepad.png" class="w-6 h-6 inline-block    " alt="">
+                </div>
+              </div>
+              <div>
+                <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                  My Blog Posts
+                </p>
+                <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  {{author.post_set.all|length}}
+                </p>
+              </div>
+            </div>
+            <!-- Card -->
+            <div class="flex items-center p-4 bg-white rounded-lg shadow-lg dark:bg-gray-800 hover:shadow-xl">
+              <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full dark:text-green-100 dark:bg-green-500">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                    My Forum Posts
+                </p>
+                <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                 24
+                </p>
+              </div>
+            </div>
+            <!-- Card -->
+            <div class="flex items-center p-4 bg-white rounded-lg shadow-lg dark:bg-gray-800 hover:shadow-xl">
+                <div class="p-3 mr-4 text-teal-500 bg-teal-100 rounded-full dark:text-teal-100 dark:bg-teal-500">
+                    <div class="rounded-full bg-green-100 p-2 flex justify-center items-center">
+                        <img src="https://img.icons8.com/color/2x/fa314a/linktree.png" class="w-7 h-7 inline-block" alt="">
+                    </div>
+                  </div>
+              <div>
+                <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                  My Followers
+                </p>
+                <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  376
+                </p>
+              </div>
+            </div>
+            <!-- Card -->
+            <div class="flex items-center p-4 bg-white rounded-lg shadow-lg dark:bg-gray-800 hover:shadow-xl">
+             
+              <div class="p-3 mr-4 text-blue-500 rounded-full dark:text-blue-100 dark:bg-blue-500">
+                <div class="rounded-full bg-red-100 p-3 flex justify-center items-center">
+                    <img src="https://img.icons8.com/ios-glyphs/2x/fa314a/following.png" class="w-6 h-6 inline-block" alt="">
+                </div>
+              </div>
+              <div>
+                <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                 Following
+                </p>
+                <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                  35
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </main>
+</div>
+        </section>
+    </div>
+    
+{%endblock%}

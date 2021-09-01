@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign Out" %}{% endblock %}
+{% block extra_head %}
+<script>
+    form = document.getElementById('form')
+    sigoutBtn = document.getElementById('sigoutBtn')
+</script>
+
+
+{% endblock %}
+{% block content %}
+<div class="flex justify-center items-center h-screen ">
+<div class="flex flex-col items-center bg-white w-max p-4 shadow-lg rounded-xl px-8">
+    <!--
+        <h1 class="font-bold">{% trans "Sign Out" %}</h1>
+    -->
+    
+
+<p class="py-4 pt-8">{% trans 'Are you sure you want to sign out?' %}</p>
+
+<form id='form' method="post" action="{% url 'account_logout' %}">
+  {% csrf_token %}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+  {% endif %}
+  <button class="mt-4 bg-blue-600 text-white p-2 px-6 rounded shadow hover:shadow-2xl" id='sigoutBtn' type="submit">{% trans 'Sign Out' %}</button>
+</form>
+</div>
+</div>
+
+{% endblock %}
