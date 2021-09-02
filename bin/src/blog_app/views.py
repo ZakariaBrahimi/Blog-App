@@ -1,15 +1,18 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Author, Post, Comment
 from .forms import CreatePostForm, EditProfileForm, EditPostForm, CommentForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.core import serializers
 
 
 def homePage(request):
+    posts = Post.objects.all().order_by('-published_at')[:2]
+    if request.is_ajax():
+        serialized_posts = serializers.serialize('json', posts)
+        return JsonResponse({'posts': serialized_posts})
     
-
     context = {
-        'posts': Post.objects.all().order_by('-published_at'),
+        'posts': posts,
     }
     return render(request, 'home.html', context)
 
@@ -23,14 +26,6 @@ def singlPost(request, slug, postID):
     post = get_object_or_404(Post, slug=slug, id=postID)
     form = CommentForm()
     comments = Comment.objects.filter(post_id=post)
-    # if request.method == 'POST':
-    #     form = CommentForm(request.POST or None)
-    #     if form.is_valid():
-    #         instance = form.save(commit=False)
-    #         instance.user_id = request.user
-    #         instance.post_id = post
-    #         instance.save()
-    #         return redirect('blog:singl_post', post.slug, post.id)
     if request.is_ajax():
         form = CommentForm(request.POST or None)
         if form.is_valid():
@@ -38,9 +33,7 @@ def singlPost(request, slug, postID):
             instance.user_id = request.user
             instance.post_id = post
             instance.save()
-            print(instance)
             newComment = serializers.serialize('json', [instance, ])
-            print(f'new comment serialized: {newComment}')
             return JsonResponse({'newComment': [newComment, ]}, status=200)
         return JsonResponse({"error": "Error occured during request"}, status=400)
     context = {
@@ -66,7 +59,7 @@ def creatPost(request):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            return redirect('/blog')    
+            return redirect('/')    
     else:
         form = CreatePostForm()
     context = {
@@ -88,16 +81,12 @@ def editPost(request, slug , postID):
         'form': form,
     }
     return render(request, 'editPost.html', context)
-# TODO: Complete delete view funstion.
+
 def deletePost(request, slug, postID):
     post = get_object_or_404(Post, slug=slug, id=postID)
-    if request.method == 'POST':
+    if request.is_ajax():
         post.delete()
-        return redirect('/blog')
-    context = {
-        'post': post,
-    }
-    return render(request, 'deletePost.html', context)
+        return HttpResponse({})
 
 def editProfile(request, userID):
     if request.method == 'POST':

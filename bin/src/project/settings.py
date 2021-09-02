@@ -197,5 +197,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Custom User Model Settings
 AUTH_USER_MODEL = 'blog_app.Author'
 
-LOGIN_REDIRECT_URL = '/blog'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/blog'
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'

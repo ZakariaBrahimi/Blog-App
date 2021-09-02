@@ -43,35 +43,58 @@
         </Article>
         {% endfor %}
 
+        <form id='loadMoreForm' method='GET'>
+            {% csrf_token %}
+            <button type="submit">More Posts</button>
+            
+        </form>
 
-
-        <div class="flex w-full justify-center text-blue-600 mt-5 ">
+        <!-- <div class="flex w-full justify-center text-blue-600 mt-5 ">
             <span class="bg-white p-2 px-3 border rounded-tl-lg rounded-bl-lg">Previous</span>
             <span class="bg-white p-2 px-4 border">2</span>
             <span class="bg-white p-2 px-4 border bg-blue-600 text-white">3</span>
             <span class="bg-white p-2 px-4 border">4</span>
             <span class="bg-white p-2 px-5 border rounded-tr-lg rounded-br-lg">Next</span>
-        </div>
+        </div> -->
     </main>
     {% if  user.is_authenticated %}
     <aside class=" flex flex-col items-center p-6 bg-white h-full w-3/12 rounded-lg mr-6 shadow-lg">
-        <a href=" {% url 'blog:create_post' %} ">
-            <button class="bg-blue-500 p-2 px-24 shadow-2xl rounded-lg text-white hover:shadow-4xl font-bold">New Post</button>
-        </a>
+        <!-- <a href=" {% url 'blog:create_post' %} "> -->
+            <button id="createPostBtn" class="bg-blue-500 p-2 px-24 shadow-2xl rounded-lg text-white hover:shadow-4xl font-bold">New Post</button>
+        <!-- </a> -->
     </aside>
     {% endif%}
 </div>
 {%endblock%}
 {%block bottom_js%}
 <script>
-                        
-                        const likeForm = document.querySelector(".likeForm")
-                        likeForm.addEventListener("submit", (e)=>{
-                            e.preventDefault();
-                            const postID = likeForm.getAttributeNode("id")djang.value; 
-                            console.log(postID)
 
-                        })
+const loadMoreForm = document.querySelector('#loadMoreForm');
+loadMoreForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+    console.log('submited');
+    fetch("{% url 'blog:home_page' %}",
+        {
+        method: 'GET',
+        headers:{
+                'X-CSRFToken': csrfValue,
+                'X-Requested-With': 'XMLHttpRequest'
+        
+                }
+        }).then(function(response){
+            return response.json();
 
-                    </script>
+    }).then(function(data) {      
+      let instance = JSON.parse(data["posts"]);
+      console.log(instance)
+      let fields1 = instance[0]['fields']
+      let fields2 = instance[1]['fields']
+      console.log(fields1)
+      console.log(fields2)
+       })
+});                       
+
+
+</script>
 {%endblock%}
