@@ -3,7 +3,7 @@
    <div class="flex my-12">
     <main class="h-5/6 w-8/12 m-auto flex flex-col gap-6 " >
         {% for post in posts %}
-        <Article class="bg-white p-6 flex flex-col gap-4 shadow-lg rounded-lg post">
+        <Article class="bg-white p-6 flex flex-col gap-4 shadow-lg rounded-lg post" id='postBox'>
             <img src="{{post.img.url}}"  alt="">
             <h1 class="text-gray-900 text-xl">{{post.title}}</h1>
             <P class="text-gray-600">
@@ -43,11 +43,10 @@
         </Article>
         {% endfor %}
 
-        <form id='loadMoreForm' method='GET'>
-            {% csrf_token %}
-            <button type="submit">More Posts</button>
+        <div class='flex justify-center'>
+            <button class="bg-blue-500 p-2 px-4 rounded-lg shadow-lg flex text-white font-bold" type="submit" id='loadMoreBtn'>More Posts</button>
             
-        </form>
+        </div>
 
         <!-- <div class="flex w-full justify-center text-blue-600 mt-5 ">
             <span class="bg-white p-2 px-3 border rounded-tl-lg rounded-bl-lg">Previous</span>
@@ -58,7 +57,7 @@
         </div> -->
     </main>
     {% if  user.is_authenticated %}
-    <aside class=" flex flex-col items-center p-6 bg-white h-full w-3/12 rounded-lg mr-6 shadow-lg">
+    <aside class=" flex flex-col items-center p-6 bg-white h-full w-3/12 rounded-lg mr-6 shadow-lg ">
         <!-- <a href=" {% url 'blog:create_post' %} "> -->
             <button id="createPostBtn" class="bg-blue-500 p-2 px-24 shadow-2xl rounded-lg text-white hover:shadow-4xl font-bold">New Post</button>
         <!-- </a> -->
@@ -68,31 +67,27 @@
 {%endblock%}
 {%block bottom_js%}
 <script>
-
-const loadMoreForm = document.querySelector('#loadMoreForm');
-loadMoreForm.addEventListener('submit', (e)=>{
-    e.preventDefault();
-    let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    console.log('submited');
-    fetch("{% url 'blog:home_page' %}",
-        {
-        method: 'GET',
-        headers:{
-                'X-CSRFToken': csrfValue,
-                'X-Requested-With': 'XMLHttpRequest'
-        
-                }
-        }).then(function(response){
-            return response.json();
-
-    }).then(function(data) {      
-      let instance = JSON.parse(data["posts"]);
-      console.log(instance)
-      let fields1 = instance[0]['fields']
-      let fields2 = instance[1]['fields']
-      console.log(fields1)
-      console.log(fields2)
-       })
+const postBox = document.querySelector('#postBox');
+const loadMoreBtn = document.querySelector('#loadMoreBtn');
+visible = 4
+const handlgetData = ()=> {
+    fetch(`posts/${visible}/`,
+  {
+    method: 'GET',
+  }
+    ).then(function(response) {
+      return response.json(); //Convert response to JSON
+    }).then(function(response){
+      console.log(response.data)
+      const data = response.data
+      data.map(post=>{console.log(post.id)})
+    })
+}
+handlgetData();
+loadMoreBtn.addEventListener('click', ()=>{
+    visible += 3;
+    console.log(visible+4)
+    handlgetData();
 });                       
 
 

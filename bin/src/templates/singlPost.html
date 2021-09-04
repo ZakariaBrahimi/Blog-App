@@ -226,7 +226,7 @@ deleteForm.addEventListener('submit', deletePost);
       method: "Post",
       headers: {
         "X-CSRFToken": csrfValue,
-        "X-Requested-With": "XMLHttpRequest"
+        "X-Requested-With": "XMLHttpRequest" //Necessary to work with request.is_ajax()
       },
       body: formData
     }).then(function(response) {
@@ -252,7 +252,7 @@ deleteForm.addEventListener('submit', deletePost);
           <strong>{{user}} </strong> <span class="text-xs text-gray-400">
          ${fields['date']}</span>
           <p class="text-sm">
-            ${fields['content']}
+            ${['content']}
           </p>
           
         </div>

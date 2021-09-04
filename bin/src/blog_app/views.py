@@ -3,22 +3,17 @@ from .models import Author, Post, Comment
 from .forms import CreatePostForm, EditProfileForm, EditPostForm, CommentForm
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.core import serializers
+from django.views.generic import TemplateView, View
+
+class HomePage(TemplateView):
+    template_name = 'home.html'
 
 
-def homePage(request):
-    posts = Post.objects.all().order_by('-published_at')[:2]
-    if request.is_ajax():
-        serialized_posts = serializers.serialize('json', posts)
-        return JsonResponse({'posts': serialized_posts})
-    
-    context = {
-        'posts': posts,
-    }
-    return render(request, 'home.html', context)
-
-
-
-
+class PostJsonListView(View):
+    def get(self,visible, *args, **kwargs):
+        print(visible)
+        posts = list(Post.objects.values())
+        return JsonResponse({'data': posts}, safe=False)
 
 
 
