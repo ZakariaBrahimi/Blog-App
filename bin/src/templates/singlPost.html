@@ -1,8 +1,18 @@
 {% extends 'base.html'%}
 {% load social_share %}
+{% load editorjs %}
+
+{% load static %}
+
+{% block extra_head %}
+<script type="module" src="{% static 'editor.js' %}"></script>
+{%endblock%}
 
 {%block content%}
+
+<div id="editorjs"></div>
     <article class="h-5/6 w-4/6 m-auto	my-12 flex flex-col gap-6 bg-white p-6 shadow-lg rounded-lg">
+
         <img src="{{post.img.url}}" alt="">
         <h2 class="mb-1 text-2xl">{{post.title}}</h2>
         <div class="flex justify-between items-baseline">
@@ -124,7 +134,9 @@
         </div>
         {%endif%}
         </div>
-        <p>{{post.content}}</p>
+        <p>
+           {{ post.content | editorjs}}
+        </p>
         <div class="w-full border-b pb-5 border-gray-400    ">
             Share Post: 
             {% post_to_facebook object_or_url %} | 
@@ -184,12 +196,24 @@
  </div>
     </article>
 {%endif%}
+<script type="module">
+// import EditorJS from "../@editorjs/editorjs"
+
+console.log(5)
+// const editor = new EditorJS();
+</script>
 {%endblock%}
 
 
 {% block bottom_js%}
 <script>
- 
+
+// Editor.js logic
+
+
+
+// Delete Post Logic
+
 function deletePost(e){
   let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
   e.preventDefault();

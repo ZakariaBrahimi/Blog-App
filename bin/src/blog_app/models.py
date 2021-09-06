@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
+from django_editorjs import EditorJsField
+
 
 class Author(AbstractUser):
     img = models.ImageField(default='avatar7.png', upload_to='user_imgs', null=True, blank=True)
@@ -18,7 +20,25 @@ class Post(models.Model):
     slug = models.SlugField(editable=False, default='', blank=True, null=True)
     title = models.CharField(max_length=50)
     img = models.ImageField(upload_to='notes_img')
-    content = models.TextField()
+    content = EditorJsField(editorjs_config={
+        "tools":{
+                "Image":{
+                        "config":{
+                                "endpoints":{
+                                            "byFile": "/imageUPload/",
+                                            "byUrl": "/imageUPload/",
+                                },
+                                "additionalRequestHeaders": [{"Content-Type": "multipart/form-data"}]
+                        }
+                },
+                "Attachs":{
+                        "config":{
+                                "endpoint": "/fileUPload/",
+                                "additionalRequestHeaders": [{"Content-Type": "multipart/form-data"}],
+                        }
+                }
+        }
+        })
     published_at = models.DateTimeField(auto_now_add=True)
     comment_id = models.ForeignKey(to='Comment', on_delete=models.CASCADE, blank=True, null=True)
     like_id = models.ForeignKey(to='Like', on_delete=models.CASCADE, blank=True, null=True)

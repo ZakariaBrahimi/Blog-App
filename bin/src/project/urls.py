@@ -23,5 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('blog_app.urls', namespace='blog')),
+    path('editorjs/', include('django_editorjs_fields.urls')),
+    path('tinymce/', include('tinymce.urls')),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

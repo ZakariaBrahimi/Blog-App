@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load editorjs %}
 {% block head_title %}Create New Post{% endblock %}
 {% block content %}
 
@@ -6,17 +7,22 @@
     <div class="text-center font-extrabold text-2xl mb-6" >Create a New Post</div>
     <form enctype="multipart/form-data" method="POST" class="flex flex-col">
         {% csrf_token %}
+        {{form.media}}
         {% for field in form %}
         <span class="px-1 text-sm text-gray-600">
             {{field.label}}
         </span>
         
+
+    
+
         <div class="my-2">
             {{field}}
         </div>
         {% endfor %}
         <button type="submit" class='hover:shadow-3xl w-4/6 m-auto mt-8 bg-blue-500 p-2 px-24 shadow-2xl rounded-lg text-white hover:shadow-4xl font-bold'>Add Post</button>
     </form>    
+
 </div>
 
 

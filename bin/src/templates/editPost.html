@@ -7,6 +7,7 @@
     <div class="text-center font-extrabold text-2xl mb-6">Edit Post</div>
     <form action="" method="POST" class="flex flex-col" enctype="multipart/form-data">
         {% csrf_token %}
+        {{form.media}}
         {% for field in form %}
         <span class="px-1 text-sm text-gray-600">
             {{field.label}}

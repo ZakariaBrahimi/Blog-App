@@ -4,10 +4,37 @@ from .forms import CreatePostForm, EditProfileForm, EditPostForm, CommentForm
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.core import serializers
 from django.views.generic import TemplateView, View
+from django.views.decorators.csrf import requires_csrf_token
+from django.core.files.storage import FileSystemStorage
 
-class HomePage(TemplateView):
-    template_name = 'home.html'
+# class HomePage(TemplateView):
+#     template_name = 'home.html'
 
+@requires_csrf_token
+def upload_image_view(request):
+    f = request.FILES['image']
+    fs = FileSystemStorage()
+    fileName = str(f).split('.')[0]
+    file = fs.save(fileName, f)
+    fileUrl = fs.url(file)
+    return JsonResponse({'success': 1, 'file': {
+        'url': fileUrl, 'size': fs.size(fileName), 'name': str(f), '*extesion': 'ext'
+        }})
+
+@requires_csrf_token
+def upload_file_view(request):
+    f = request.FILES['file']
+    fs = FileSystemStorage()
+    fileName = str(f).split('.')[0]
+    file = fs.save(fileName, f)
+    fileUrl = fs.url(file)
+    return JsonResponse({'success': 1, 'file': {'url': fileUrl}})
+
+def HomePage(request):
+    context = {
+    'posts': Post.objects.all(),
+    }
+    return render(request, 'home.html', context)
 
 class PostJsonListView(View):
     def get(self,visible, *args, **kwargs):

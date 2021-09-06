@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'blog_app',
     'django.contrib.sites',
     'django_social_share',
+    'django_editorjs',
+    'django_editorjs_fields',
+    'tinymce',
     #allauth apps
     'allauth',
     'allauth.account',
@@ -199,3 +202,4 @@ AUTH_USER_MODEL = 'blog_app.Author'
 
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+

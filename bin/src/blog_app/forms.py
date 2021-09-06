@@ -1,6 +1,8 @@
 from allauth.account.forms import SignupForm, ChangePasswordForm, ResetPasswordForm
 from .models import Post, Author, Comment
 from django import forms
+from django_editorjs_fields import EditorJsWidget
+from tinymce.widgets import TinyMCE
 
 
 # to know more detials about how to custom and add css styles to a allauth forms go to the following link:
@@ -35,11 +37,14 @@ class CreatePostForm(forms.ModelForm):
         super(CreatePostForm, self).__init__(*args, **kwargs)
         for fieldname, field in self.fields.items():    
             field.widget.attrs.update({'class': 'bg-gray-200 text-md block px-3 py-2 rounded-lg w-full focus:bg-gray-100 border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none'})
-
-    class Meta:
-        model = Post
-        fields = '__all__'
-        exclude = {'user','comment_id', 'like_id',}
+        class Meta:
+            model = Post
+            fields = '__all__'
+            exclude = {'user','comment_id', 'like_id',}
+        # widgets = {
+        #     'content': EditorJsWidget(config={'minHeight': 100}),
+            
+        # }
     
 class EditProfileForm(forms.ModelForm):
     class Meta:
