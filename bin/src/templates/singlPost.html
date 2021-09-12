@@ -5,12 +5,98 @@
 {% load static %}
 
 {% block extra_head %}
-<script type="module" src="{% static 'editor.js' %}"></script>
+<script>
+// Converting returned Editorjs Json data to HTML
+
+// window.addEventListener('DOMContentLoaded', ()=>{
+//   const postBody = document.querySelector("#postBody");
+//   let m = '{{ser_post|escapejs}}'
+//   console.log(m);
+//   // let content = JSON.parse("{{ser_post|escapejs}}", );
+//   let blocks = postBody.blocks;
+//   console.log(blocks);
+// })
+
+</script>
 {%endblock%}
 
 {%block content%}
-
-<div id="editorjs"></div>
+<!-- <p ></p> -->
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const postBody = document.getElementById("post-body");
+    console.log("{{post.content|escapejs}}");
+    let body = JSON.parse("{{post.content|escapejs}}");
+    let blocks = body.blocks;
+    for (let index = 0; index < blocks.length; index++) {
+      switch (blocks[index].type) {
+        case "Header":let head = document.createElement(`h${blocks[index].data.level}`);
+        head.textContent = blocks[index].data.text;
+        postBody.appendChild(head);
+        break;
+        case "Image":let div = document.createElement("div");
+        let image = document.createElement("img");
+        let caption = document.createElement("h5");
+        image.src = `${blocks[index].data.file.url}`;
+        caption.textContent = blocks[index].data.caption;div.appendChild(image);
+        div.appendChild(caption);postBody.appendChild(div);
+        break;
+        case "List":let list;
+        if (blocks[index].data.style == "unordered") {
+          list = document.createElement("ul");}
+           else {list = document.createElement("ol");}
+           for (const item in blocks[index].data.items) {
+            let li = document.createElement("li");
+            li.textContent = blocks[index].data.items[item];
+            list.appendChild(li);}
+            postBody.appendChild(list);
+            break;
+            case "Raw":let blockquote = document.createElement("blockquote");
+            let code = document.createElement("code");
+            let pre = document.createElement("pre");
+            pre.textContent = blocks[index].data.html;pre.style.background = "#131313";
+            pre.style.color = "#dddddd";pre.style.padding = "15px";
+            code.appendChild(pre);
+            postBody.appendChild(code);
+            break;
+            case "Attaches":let parent = document.createElement("div");
+            let a = document.createElement("a");
+            let name = document.createElement("h3");
+            let size = document.createElement("h3");
+            a.href = `${blocks[index].data.file.url}`;
+            a.textContent = `Downlod ${blocks[index].data.file.extension}`;
+            name.textContent = blocks[index].data.file.name;
+            size.textContent = blocks[index].data.file.size;
+            parent.innerHTML = `<a href="${blocks[index].data.file.url}" download>Download</a>`;
+            parent.appendChild(a);
+            parent.appendChild(name);
+            parent.appendChild(size);
+            postBody.appendChild(parent);
+            break;
+case "paragraph":const p = document.createElement("p");
+p.innerHTML = blocks[index].data.text;
+postBody.appendChild(p);
+case "Link":let parent2 = document.createElement("div");
+let a2 = document.createElement("a");
+if (blocks[index].data.meta.description) {
+let desc = document.createElement("p");
+desc.textContent = blocks[index].data.meta.description;
+parent2.appendChild(desc);}
+if (blocks[index].data.meta.title) {
+let title = document.createElement("h3");
+title.textContent = blocks[index].data.meta.title;
+parent2.appendChild(title);}
+if (blocks[index].data.meta.image.url !== "") {
+let img = document.createElement("img");
+img.src = blocks[index].data.meta.image.url;
+parent2.appendChild(img);}
+a2.href = blocks[index].data.link;
+parent2.appendChild(a2);
+postBody.appendChild(parent2);
+default:break;
+}}});
+</script>
+<!-- <article id="postBody"></article> -->
     <article class="h-5/6 w-4/6 m-auto	my-12 flex flex-col gap-6 bg-white p-6 shadow-lg rounded-lg">
 
         <img src="{{post.img.url}}" alt="">
@@ -113,29 +199,12 @@
         </div>
       </div>
     </div>
-
-    <!-- modal 2 -->
-    
-  
-            <!-- <div class="">
-              <a href="{% url 'blog:delete_post' post.slug post.id %}">
-                <button
-
-                class="bg-red-600 font-semibold text-white p-2 rounded-full hover:bg-red-700 focus:outline-none focus:ring shadow-lg hover:shadow-none transition-all duration-300 m-2"
-              >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-              </button>
-              </a>
-      
-            </div> -->
           </div>
         </div>
         {%endif%}
         </div>
-        <p>
-           {{ post.content | editorjs}}
+        <p id="post-body">
+           
         </p>
         <div class="w-full border-b pb-5 border-gray-400    ">
             Share Post: 
@@ -158,7 +227,7 @@
         </div>
         <div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed shadow-lg">
           <strong>{{comment.user_id}}</strong> <span class="text-xs text-gray-400">{{comment.date}}</span>
-          <p class="text-sm">
+          <div class="text-sm">
             {{comment.content}}
           </p>
           
@@ -196,21 +265,11 @@
  </div>
     </article>
 {%endif%}
-<script type="module">
-// import EditorJS from "../@editorjs/editorjs"
-
-console.log(5)
-// const editor = new EditorJS();
-</script>
 {%endblock%}
 
 
 {% block bottom_js%}
 <script>
-
-// Editor.js logic
-
-
 
 // Delete Post Logic
 

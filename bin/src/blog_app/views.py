@@ -12,11 +12,12 @@ from django.core.files.storage import FileSystemStorage
 
 @requires_csrf_token
 def upload_image_view(request):
-    f = request.FILES['image']
-    fs = FileSystemStorage()
-    fileName = str(f).split('.')[0]
+    f = request.FILES['image'] # Ex: myPic.png
+    fs = FileSystemStorage() # class implements basic file storage on a local filesystem.
+    fileName = str(f).split('.')[0] #myPic
     file = fs.save(fileName, f)
-    fileUrl = fs.url(file)
+    fileUrl = fs.url(file) #Ex: /media/myPic
+    print(fileUrl)
     return JsonResponse({'success': 1, 'file': {
         'url': fileUrl, 'size': fs.size(fileName), 'name': str(f), '*extesion': 'ext'
         }})
@@ -46,6 +47,8 @@ class PostJsonListView(View):
 
 def singlPost(request, slug, postID):
     post = get_object_or_404(Post, slug=slug, id=postID)
+    # print([post.content,])
+    # ser_post = serializers.serialize('json', [post, ])
     form = CommentForm()
     comments = Comment.objects.filter(post_id=post)
     if request.is_ajax():
@@ -62,6 +65,7 @@ def singlPost(request, slug, postID):
         'post': post,
         'form': form,
         'comments': comments,
+        # 'ser_post': ser_post,
         }
     return render(request, 'singlPost.html', context)
 

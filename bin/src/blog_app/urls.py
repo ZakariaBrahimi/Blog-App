@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from . import views
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt  #This decorator marks a view as being exempt from the protection ensured by the middlewar
 
 app_name = 'blog_app'
 urlpatterns = [

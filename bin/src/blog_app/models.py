@@ -22,22 +22,19 @@ class Post(models.Model):
     img = models.ImageField(upload_to='notes_img')
     content = EditorJsField(editorjs_config={
         "tools":{
-                "Image":{
-                        "config":{
-                                "endpoints":{
-                                            "byFile": "/imageUPload/",
-                                            "byUrl": "/imageUPload/",
+            "Image":{
+                "config":{
+                    "endpoints":{
+                        "byFile": "/imageUPload/",
+                        "byUrl": "/imageUPload/",
                                 },
-                                "additionalRequestHeaders": [{"Content-Type": "multipart/form-data"}]
-                        }
-                },
-                "Attachs":{
-                        "config":{
-                                "endpoint": "/fileUPload/",
-                                "additionalRequestHeaders": [{"Content-Type": "multipart/form-data"}],
-                        }
-                }
-        }
+                        "additionalRequestHeaders": [{"Content-Type": "multipart/form-data"}]
+                        }},
+            "Attachs":{
+               "config":{
+                    "endpoint": "/fileUPload/",
+                    "additionalRequestHeaders": [{"Content-Type": "multipart/form-data"}],
+                        }}}
         })
     published_at = models.DateTimeField(auto_now_add=True)
     comment_id = models.ForeignKey(to='Comment', on_delete=models.CASCADE, blank=True, null=True)
