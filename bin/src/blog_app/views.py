@@ -47,8 +47,6 @@ class PostJsonListView(View):
 
 def singlPost(request, slug, postID):
     post = get_object_or_404(Post, slug=slug, id=postID)
-    # print([post.content,])
-    # ser_post = serializers.serialize('json', [post, ])
     form = CommentForm()
     comments = Comment.objects.filter(post_id=post)
     if request.is_ajax():
@@ -65,7 +63,6 @@ def singlPost(request, slug, postID):
         'post': post,
         'form': form,
         'comments': comments,
-        # 'ser_post': ser_post,
         }
     return render(request, 'singlPost.html', context)
 

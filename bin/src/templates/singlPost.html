@@ -203,8 +203,8 @@ default:break;
         </div>
         {%endif%}
         </div>
-        <p id="post-body">
-           
+        <p>
+           {{post.content}}
         </p>
         <div class="w-full border-b pb-5 border-gray-400    ">
             Share Post: 
@@ -226,8 +226,8 @@ default:break;
           <img class="mt-2 rounded-full w-8 h-8 sm:w-10 sm:h-10" src="{{comment.user_id.img.url}}" alt="">
         </div>
         <div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed shadow-lg">
-          <strong>{{comment.user_id}}</strong> <span class="text-xs text-gray-400">{{comment.date}}</span>
-          <div class="text-sm">
+          <strong>{{comment.user_id.first_name}} {{comment.user_id.last_name}}</strong> <span class="text-xs text-gray-400">{{comment.date}}</span>
+          <p class="text-sm">
             {{comment.content}}
           </p>
           
@@ -236,7 +236,7 @@ default:break;
       {% endfor %}
     </div>
   </div>
-
+</div>
 <!-- comment form -->
 {% if request.user.is_authenticated %}
 <div class="flex  items-center justify-center shadow-lg my-4 ">
@@ -262,7 +262,7 @@ default:break;
           </div>
        </form>
     </div>
- </div>
+ <!-- </div> -->
     </article>
 {%endif%}
 {%endblock%}
@@ -332,10 +332,10 @@ deleteForm.addEventListener('submit', deletePost);
           <img class="mt-2 rounded-full w-8 h-8 sm:w-10 sm:h-10" src="{{user.img.url}}" alt="">
         </div>
         <div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed shadow-lg">
-          <strong>{{user}} </strong> <span class="text-xs text-gray-400">
+          <strong>{{user.first_name}} {{user.last_name}}</strong> <span class="text-xs text-gray-400">
          ${fields['date']}</span>
           <p class="text-sm">
-            ${['content']}
+            ${fields['content']}
           </p>
           
         </div>
