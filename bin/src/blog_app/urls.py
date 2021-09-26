@@ -2,6 +2,7 @@ from django.conf.urls import url
 from . import views
 from django.views.decorators.csrf import csrf_exempt  #This decorator marks a view as being exempt from the protection ensured by the middlewar
 
+
 app_name = 'blog_app'
 urlpatterns = [
     url(r'^$', views.HomePage, name='home_page'),
@@ -14,4 +15,5 @@ urlpatterns = [
     url(r'^edit-profile/(?P<userID>\d+)/$', views.editProfile, name='edit_profile'),
     url(r'^fileUPload/$', csrf_exempt(views.upload_file_view)),
     url(r'^imageUPload/$', csrf_exempt(views.upload_image_view)),
+    
 ]

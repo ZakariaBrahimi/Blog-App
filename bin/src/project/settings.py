@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'notifications',
     
 ]
 
@@ -196,10 +197,10 @@ ACCOUNT_FORMS = {
 #
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #
-#LOGIN_REDIRECT_URL = 'userProfile/'
 # Custom User Model Settings
 AUTH_USER_MODEL = 'blog_app.Author'
 
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
+# NUM_TO_FETCH = 2

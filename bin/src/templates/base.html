@@ -10,10 +10,12 @@
     {% block extra_head %}
     {% endblock %}
     <link rel="stylesheet" href="{% static '/tailwind.css' %}">
-    
+    <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
   </head>
   {% block body %}
   <body class="bg-gray-100">
+    
+
     {% if user.is_authenticated %}
     {% include 'loggedUserNavbar.html' %}
     {%else%}
@@ -29,3 +31,6 @@
 </html>
 {% block bottom_js%}
 {%endblock%}
+<script>
+  
+</script>

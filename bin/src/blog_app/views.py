@@ -6,9 +6,12 @@ from django.core import serializers
 from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import requires_csrf_token
 from django.core.files.storage import FileSystemStorage
+from notifications.signals import notify
 
 # class HomePage(TemplateView):
 #     template_name = 'home.html'
+
+
 
 @requires_csrf_token
 def upload_image_view(request):
@@ -32,8 +35,13 @@ def upload_file_view(request):
     return JsonResponse({'success': 1, 'file': {'url': fileUrl}})
 
 def HomePage(request):
+    posts = Post.objects.all()
+    jsonPosts = serializers.serialize('json', posts)
+    # user = Author.objects.get(pk=request.user.id)
+    # print(user.notifications.unread())
     context = {
     'posts': Post.objects.all(),
+    'jsonPosts': jsonPosts,
     }
     return render(request, 'home.html', context)
 
@@ -43,9 +51,15 @@ class PostJsonListView(View):
         posts = list(Post.objects.values())
         return JsonResponse({'data': posts}, safe=False)
 
-
+def CommentNotification(sender_username, recipient_id):
+    sender = Author.objects.get(username=sender_username)
+    recipient = Author.objects.get(id=recipient_id)
+    message = f"{sender} comments on your post on"
+    notify.send(sender=sender, recipient=recipient, verb='Comment Notification',
+    description=message)
 
 def singlPost(request, slug, postID):
+    # print(request.user.notifications.unread())
     post = get_object_or_404(Post, slug=slug, id=postID)
     form = CommentForm()
     comments = Comment.objects.filter(post_id=post)
@@ -56,9 +70,11 @@ def singlPost(request, slug, postID):
             instance.user_id = request.user
             instance.post_id = post
             instance.save()
+            CommentNotification(request.user.username, post.user.id)
             newComment = serializers.serialize('json', [instance, ])
             return JsonResponse({'newComment': [newComment, ]}, status=200)
         return JsonResponse({"error": "Error occured during request"}, status=400)
+    
     context = {
         'post': post,
         'form': form,
@@ -82,7 +98,7 @@ def creatPost(request):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            return redirect('/')    
+            return redirect('blog:singl_post', instance.slug, instance.id)    
     else:
         form = CreatePostForm()
     context = {

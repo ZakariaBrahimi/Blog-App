@@ -1,4 +1,9 @@
-    <nav class=" bg-gray-800 text-white p-3 flex justify-between px-7 items-center h-1/6">
+
+{% load notifications_tags %}
+{% live_notify_badge  as unread_notif_count %}
+{% live_notify_list as notifications_list %}
+{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge'%}
+    <nav class="bg-gray-800 text-white p-3 flex justify-between items-center px-7 items-center ">
         <div class="flex justify-start items-center w-6/12">
             <div class="mr-12 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 inline-block	" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,25 +26,27 @@
 
         <!--RIGHT SECTION-->
         <div class="flex justify-between  items-center w-5/12">
-            <form action="">
-                <input type="search" name="" id="" class="rounded mr-1 py-1 px-2 text-black focus:outline-none focus:ring focus:border-blue-200" placeholder="Search  for posts...">
+            <div action="" class="">
+                <input type="search" name="" id="search" class="rounded mr-1 py-1 px-2 text-black focus:outline-none focus:ring focus:border-blue-200" placeholder="Search  for posts...">
                 <button type="submit" class="bg-blue-500 p-1 rounded px-3">
                     Search
                 </button>
-            </form>
-
-
+            </div>
             <!--MY PROFILE & SETTINGS BUTTONS SECTION-->
-
-
             <div class="flex justify-around gap-3 w-1/6">
 
                 <!--Notifications Button-->
-                <button class="bg-white rounded-lg p-2 shadow-inner ">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <button class="bg-white rounded-lg p-2 shadow-inner relative" id="notificationBtn">
+                    
+                    {% if unread_notif_count %}
+                    <div class='bg-red-500 rounded-lg absolute right-0 top-0 ' style="padding:0 0.3rem;">{{ unread_notif_count }}</div>
+                    {% endif %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                       </svg>
                 </button>
+                
+                
 
 
                 <!--settings Button-->
@@ -50,12 +57,23 @@
                           </svg>
                     </button>
                     
-                </div>
-                
-                
+                </div>  
             </div>
         </div>
     </nav>
+    <div class="hidden flex-col bg-white w-max rounded-lg mt-2 text-gray-800 shadow-lg absolute right-20 py-2 text-sm" id="NotificationList">
+        {% for notification in user.notifications.unread %}
+        <a href="">
+            <p class="px-8 py-1 hover:bg-blue-500">{{notification.actor}} comments on your post on {{notification.timestamp}}</p>
+        </a>
+        {%endfor%}  
+        <ul class="dropdown-menu" id="notice-link">
+                  <a href="{% url 'notifications:unread' %}">
+                    See all Notifications...
+                  </a>
+                </ul> 
+    </div>
+
     <div class="hidden flex-col bg-white w-max rounded-lg mt-2 text-gray-800 shadow-lg absolute right-6 py-2 text-sm" id="dropMenu">
         <a href="{% url 'blog:user_profile' user.id%}">
             <p class="px-8 py-1 hover:bg-blue-500">My Profile</p>
@@ -77,6 +95,14 @@
             dropMenu.classList.toggle('hidden');
         })
 
+
+        var notificationBtn = document.querySelector('#notificationBtn');
+        var NotificationList = document.querySelector('#NotificationList');
+        
+        notificationBtn.addEventListener('click', ()=>{
+            NotificationList.classList.toggle('flex');
+            NotificationList.classList.toggle('hidden');
+        })
 
     </script>
 

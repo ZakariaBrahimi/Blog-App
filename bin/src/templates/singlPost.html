@@ -5,27 +5,13 @@
 {% load static %}
 
 {% block extra_head %}
-<script>
-// Converting returned Editorjs Json data to HTML
-
-// window.addEventListener('DOMContentLoaded', ()=>{
-//   const postBody = document.querySelector("#postBody");
-//   let m = '{{ser_post|escapejs}}'
-//   console.log(m);
-//   // let content = JSON.parse("{{ser_post|escapejs}}", );
-//   let blocks = postBody.blocks;
-//   console.log(blocks);
-// })
-
-</script>
 {%endblock%}
 
 {%block content%}
 <!-- <p ></p> -->
-<script>
+<!-- <script>
   window.addEventListener("DOMContentLoaded", () => {
     const postBody = document.getElementById("post-body");
-    console.log("{{post.content|escapejs}}");
     let body = JSON.parse("{{post.content|escapejs}}");
     let blocks = body.blocks;
     for (let index = 0; index < blocks.length; index++) {
@@ -95,7 +81,7 @@ parent2.appendChild(a2);
 postBody.appendChild(parent2);
 default:break;
 }}});
-</script>
+</script> -->
 <!-- <article id="postBody"></article> -->
     <article class="h-5/6 w-4/6 m-auto	my-12 flex flex-col gap-6 bg-white p-6 shadow-lg rounded-lg">
 
@@ -271,8 +257,9 @@ default:break;
 {% block bottom_js%}
 <script>
 
+// let h = "23T06:41:38.018Z"
+// console.log(h[3])
 // Delete Post Logic
-
 function deletePost(e){
   let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
   e.preventDefault();
@@ -298,13 +285,48 @@ deleteForm.addEventListener('submit', deletePost);
 
 
 
+const convertToMonth = (month)=>{
+  switch (month){
+    case "01":
+      return 'Jan';
+      break;
+    case "02":
+      return 'Feb';
+      break;
+    case "09":
+      return 'Sept';
+      break;
+  }
+}
 
+const displayTime = (time)=>{
+  // "23T06:41:38.018Z"
+  let hour = time.slice(3,5);
+  let minute = time.slice(6,8);
+  let t = 'p.m';
+  if(hour[0] === "0"){
+    t = 'a.m'
+    // hour = hour[1];
+  }
+  let result = `${hour}:${minute} ${t}.`;
+  return result // 6:40 a.m.
 
+}
+const displayDate = (date)=>{
+  // Sept. 23, 2021, 6:40 a.m.
+  // date = fields['date'] ===>> 2021-09-23T06:41:38.018Z
+  let dateArray = date.split("-"); // [ "2021", "09", "23T06:41:38.018Z" ]
+  let year = dateArray[0];
+  let month = convertToMonth(dateArray[1]);
+  let day = dateArray[2].slice(0,2);
+  let time = displayTime(dateArray[2]);
+  let result = `${month}. ${day}, ${year}, ${time}`;
+  return result
+}
 
   function createComment(formData){
     console.log("Posting Comment");
     let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    console.log(csrfValue)
     fetch("{% url 'blog:singl_post' post.slug post.id %}", {
       method: "Post",
       headers: {
@@ -325,6 +347,7 @@ deleteForm.addEventListener('submit', deletePost);
       // if(noCommentFlag) {
       //   commentsList.removeChild(noCommentFlag);
       // }
+      
       commentsList.innerHTML += `
       <div class="space-y-4 mt-4">
         <div class="flex ">
@@ -333,7 +356,7 @@ deleteForm.addEventListener('submit', deletePost);
         </div>
         <div class="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed shadow-lg">
           <strong>{{user.first_name}} {{user.last_name}}</strong> <span class="text-xs text-gray-400">
-         ${fields['date']}</span>
+         ${displayDate(fields['date'])}</span>
           <p class="text-sm">
             ${fields['content']}
           </p>
@@ -347,6 +370,7 @@ deleteForm.addEventListener('submit', deletePost);
       console.error("Error", error);
     })
   }   
+
 
   function submitComment(e){
     e.preventDefault();
@@ -423,6 +447,7 @@ deleteForm.addEventListener('submit', deletePost);
     // init
     modal();
 
+// export default displayDate;
     
 </script>
 {%endblock%}

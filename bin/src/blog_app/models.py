@@ -61,6 +61,8 @@ class Comment(models.Model):
 class Like(models.Model):
     user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)
     post_id = models.ForeignKey(to='Post', on_delete=models.CASCADE)
+    # status  = models.BoleinField()
+    # a = [1,'a', True, ]
     
 class Followers(models.Model):
     user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)
