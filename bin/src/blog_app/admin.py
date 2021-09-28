@@ -27,8 +27,10 @@ class UserAdmin(UserAdmin):
     add_form = UserCreationForm
 
 """
+class PostList(admin.ModelAdmin):
+    list_display = ('title', 'id')
 admin.site.register(Author, UserAdmin)
 admin.site.register(Comment)
 admin.site.register(Followers)
 admin.site.register(Like)
-admin.site.register(Post)
+admin.site.register(Post, PostList)

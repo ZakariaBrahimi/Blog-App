@@ -46,10 +46,12 @@ def HomePage(request):
     return render(request, 'home.html', context)
 
 class PostJsonListView(View):
-    def get(self,visible, *args, **kwargs):
-        print(visible)
-        posts = list(Post.objects.values())
-        return JsonResponse({'data': posts}, safe=False)
+    def get(self, *args, **kwargs):
+        print('000000000000000000000000000')
+        print(args)
+        posts = Post.objects.all()
+        data = serializers.serialize('json', posts)
+        return JsonResponse({'data': data}, safe=False)
 
 def CommentNotification(sender_username, recipient_id):
     sender = Author.objects.get(username=sender_username)
