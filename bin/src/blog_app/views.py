@@ -60,9 +60,9 @@ def CommentNotification(sender_username, recipient_id):
     notify.send(sender=sender, recipient=recipient, verb='Comment Notification',
     description=message)
 
-def singlPost(request, slug, postID):
+def singlPost(request, slug):
     # print(request.user.notifications.unread())
-    post = get_object_or_404(Post, slug=slug, id=postID)
+    post = get_object_or_404(Post, slug=slug)
     form = CommentForm()
     comments = Comment.objects.filter(post_id=post)
     if request.is_ajax():
@@ -100,7 +100,7 @@ def creatPost(request):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            return redirect('blog:singl_post', instance.slug, instance.id)    
+            return redirect('blog:singl_post', instance.slug)    
     else:
         form = CreatePostForm()
     context = {
@@ -114,7 +114,7 @@ def editPost(request, slug , postID):
         form = EditPostForm(request.POST or None, request.FILES or None, instance=instance)
         if form.is_valid():
             form.save()
-            return redirect('blog:singl_post', instance.slug, instance.id)
+            return redirect('blog:singl_post', instance.slug)
     else:
         form = EditPostForm(instance=instance)
     context = {

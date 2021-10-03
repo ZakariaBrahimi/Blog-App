@@ -18,12 +18,9 @@
         </div>
     </div>
         <div class="flex items-center justify-between	w-6/12">
-            <form action="">
-                <input type="search" name="" id="" class="rounded mr-1 py-1 px-2 text-black focus:outline-none" placeholder="Search  for posts...">
-                <button type="submit" class="bg-blue-500 p-1 rounded px-3">
-                    Search
-                </button>
-            </form>
+            <div class="autoComplete_wrapper">
+                <input id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off" maxlength="2048" tabindex="1">
+            </div>
             <div>
                 
                 <a href="{% url 'account_login' %}">
@@ -45,3 +42,58 @@
             </div>
         </div>
 </nav>
+<script>
+        const dataArr = JSON.parse('{{jsonPosts}}'.replace(/&quot;/g, '"'))
+        let finalData = []
+        // http://127.0.0.1:8000/singl-post/444/8/
+        console.log(dataArr[0]['fields'])
+        let url = `/singl-post/${dataArr[0]['fields']['slug']}`
+        dataArr.map(function (item) {finalData.push(item['fields']['title'])})
+        const autoCompleteJS = new autoComplete({
+            selector: "#autoComplete",
+            placeHolder: "Search for Posts...",
+            data: {
+                src: finalData,
+                cache: true,
+            },
+            resultsList: {
+                element: (list, data) => {
+                    const info = document.createElement("p");
+                    if (data.results.length > 0) {
+                        info.innerHTML = `Displaying <strong>${data.results.length}</strong> out of <strong>${data.matches.length}</strong> results`;
+                    } else {
+                        info.innerHTML = `Found <strong>${data.matches.length}</strong> matching results for <strong>"${data.query}"</strong>`;
+                        }
+                    list.prepend(info);
+                },
+                noResults: true,
+                maxResults: 15,
+                tabSelect: true
+            },
+            resultItem: {
+                element: (item, data) => {
+                    console.log(data['value'])
+                    let url = `/singl-post/${data['value']}`
+                // Modify Results Item Style
+                    item.style = "display: flex; justify-content: space-between;";
+                // Modify Results Item Content
+                    item.innerHTML = `
+                        <a href=${url} style="text-overflow: ellipsis; white-space: nowrap;">
+                            ${data.match}
+                        </a>
+                        `;
+                         },
+                highlight: true
+            },
+            events: {
+                input: {
+                    selection: (event) => {
+                        const selection = event.detail.selection.value;
+                        autoCompleteJS.input.value = selection;
+                        console.log(selection)
+                        
+                    }
+                }
+            }
+        });
+    </script>

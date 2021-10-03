@@ -327,7 +327,7 @@ const displayDate = (date)=>{
   function createComment(formData){
     console.log("Posting Comment");
     let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    fetch("{% url 'blog:singl_post' post.slug post.id %}", {
+    fetch("{% url 'blog:singl_post' post.slug %}", {
       method: "Post",
       headers: {
         "X-CSRFToken": csrfValue,
