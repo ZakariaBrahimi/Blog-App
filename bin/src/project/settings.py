@@ -190,6 +190,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # Custom Allauth Forms
 ACCOUNT_FORMS = {
     'signup': 'blog_app.forms.CustomSignupForm',
+    'login': 'blog_app.forms.CustomLoginForm',
     'change_password': 'blog_app.forms.CustomChangePasswordForm',
     'reset_password': 'blog_app.forms.CustomResetPasswordForm',
 }
@@ -203,4 +204,14 @@ AUTH_USER_MODEL = 'blog_app.Author'
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
-# NUM_TO_FETCH = 2
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+
+DEFAULT_FROM_EMAIL = 'brahimi.zakaria.abdessamed@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'

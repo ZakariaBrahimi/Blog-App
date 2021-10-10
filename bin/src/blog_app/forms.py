@@ -1,4 +1,4 @@
-from allauth.account.forms import SignupForm, ChangePasswordForm, ResetPasswordForm
+from allauth.account.forms import SignupForm, ChangePasswordForm, ResetPasswordForm, LoginForm
 from .models import Post, Author, Comment
 from django import forms
 
@@ -13,6 +13,14 @@ class CustomSignupForm(SignupForm):
                 'class': 'text-md block px-3 py-2 rounded-lg w-full bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none'
             })
 
+class CustomLoginForm(LoginForm):
+    def __init__(self, *args, **kwargs):
+        super(CustomLoginForm, self).__init__(*args, **kwargs)
+        for fieldname, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'text-md block px-3 py-2 rounded-lg w-full bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none'
+            })
+            
 class CustomChangePasswordForm(ChangePasswordForm):
     def __init__(self, *args, **kwargs):
         super(CustomChangePasswordForm, self).__init__(*args, **kwargs)
@@ -25,9 +33,15 @@ class CustomResetPasswordForm(ResetPasswordForm):
     def __init__(self, *args, **kwargs):
         super(CustomResetPasswordForm, self).__init__(*args, **kwargs)
         for fieldname, field in self.fields.items():
-            field.widget.attrs.update({
-                'class': 'text-md block px-3 py-2 rounded-lg w-full bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none'
-            })
+            if (fieldname != 'remember'):
+                field.widget.attrs.update({
+                    'class': 'text-md block px-3 py-2 rounded-lg w-full bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none'
+                })
+            else:
+                field.widget.attrs.update({
+                    'class': 'inline text-md block px-3 py-2 rounded-lg w-full bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none'
+                })
+                fieldname.widget.attrs.update({'class': 'inline'})
 
 
 class CreatePostForm(forms.ModelForm):

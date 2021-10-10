@@ -7,12 +7,24 @@ from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import requires_csrf_token
 from django.core.files.storage import FileSystemStorage
 from notifications.signals import notify
-
+from django.template import Context, Template
+from django.template.loader import render_to_string
+from allauth.account.views import SignupView
 # class HomePage(TemplateView):
 #     template_name = 'home.html'
 
 
-
+class CustomSignupView(SignupView):
+    def get_context_data(self, *args, **kwargs):
+        posts = Post.objects.all()
+        jsonPosts = serializers.serialize('json', posts)
+        ret = super(SignupView, self).get_context_data(**kwargs)
+        ret.update(
+            {
+                'jsonPosts': jsonPosts
+            }
+        )
+        return ret
 @requires_csrf_token
 def upload_image_view(request):
     f = request.FILES['image'] # Ex: myPic.png
@@ -36,18 +48,14 @@ def upload_file_view(request):
 
 def HomePage(request):
     posts = Post.objects.all()
-    jsonPosts = serializers.serialize('json', posts)
-    # user = Author.objects.get(pk=request.user.id)
-    # print(user.notifications.unread())
     context = {
-    'posts': Post.objects.all(),
-    'jsonPosts': jsonPosts,
+    'posts': posts,
     }
+    searchBar(context)
     return render(request, 'home.html', context)
 
 class PostJsonListView(View):
     def get(self, *args, **kwargs):
-        print('000000000000000000000000000')
         print(args)
         posts = Post.objects.all()
         data = serializers.serialize('json', posts)
@@ -57,8 +65,7 @@ def CommentNotification(sender_username, recipient_id):
     sender = Author.objects.get(username=sender_username)
     recipient = Author.objects.get(id=recipient_id)
     message = f"{sender} comments on your post on"
-    notify.send(sender=sender, recipient=recipient, verb='Comment Notification',
-    description=message)
+    notify.send(sender=sender, recipient=recipient, verb='Comment Notification', description=message)
 
 def singlPost(request, slug):
     # print(request.user.notifications.unread())
@@ -76,21 +83,20 @@ def singlPost(request, slug):
             newComment = serializers.serialize('json', [instance, ])
             return JsonResponse({'newComment': [newComment, ]}, status=200)
         return JsonResponse({"error": "Error occured during request"}, status=400)
-    
+
     context = {
         'post': post,
         'form': form,
         'comments': comments,
         }
+    searchBar(context)
     return render(request, 'singlPost.html', context)
-
-
-
 
 def userProfile(request, userID):
     context = {
         'author' : Author.objects.get(id=userID),
     }
+    searchBar(context)
     return render(request, 'userProfile.html', context)
 
 def creatPost(request):
@@ -106,6 +112,7 @@ def creatPost(request):
     context = {
         'form': form,
     }
+    searchBar(context)
     return render(request, 'newPostForm.html', context)
 
 def editPost(request, slug , postID):
@@ -121,6 +128,7 @@ def editPost(request, slug , postID):
         'post': instance,
         'form': form,
     }
+    searchBar(context)
     return render(request, 'editPost.html', context)
 
 def deletePost(request, slug, postID):
@@ -140,4 +148,10 @@ def editProfile(request, userID):
     context = {
         'form': form,
     }
+    searchBar(context)
     return render(request, 'editProfile.html', context)
+
+def searchBar(context):
+    posts = Post.objects.all()
+    jsonPosts = serializers.serialize('json', posts)
+    context['jsonPosts'] = jsonPosts

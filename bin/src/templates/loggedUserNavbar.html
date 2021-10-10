@@ -1,4 +1,3 @@
-
 {% load notifications_tags %}
 {% live_notify_badge  as unread_notif_count %}
 {% live_notify_list as notifications_list %}
@@ -26,10 +25,9 @@
 
         <!--RIGHT SECTION-->
         <div class="flex justify-between  items-center w-5/12">
-           
-
+            
             <div class="autoComplete_wrapper">
-                <input id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off" maxlength="2048" tabindex="1">
+                <input id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
             </div>
             <!--MY PROFILE & SETTINGS BUTTONS SECTION-->
             <div class="flex justify-around gap-3 w-1/6">
@@ -44,9 +42,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                       </svg>
                 </button>
-                
-                
-
 
                 <!--settings Button-->
                 <div>
@@ -87,10 +82,10 @@
     </div>
     
     <script>
-        const dataArr = JSON.parse('{{jsonPosts}}'.replace(/&quot;/g, '"'))
+        const dataArr = JSON.parse('{{jsonPosts| escapejs}}')
+        console.log(dataArr)
         let finalData = []
-        // http://127.0.0.1:8000/singl-post/444/8/
-        console.log(dataArr[0]['fields'])
+        // http://127.0.0.1:8000/singl-post/444/
         let url = `/singl-post/${dataArr[0]['fields']['slug']}`
         dataArr.map(function (item) {finalData.push(item['fields']['title'])})
         const autoCompleteJS = new autoComplete({
@@ -140,6 +135,8 @@
                 }
             }
         });
+
+        
     </script>
     <script>
 
@@ -150,7 +147,6 @@
             dropMenu.classList.toggle('flex');
             dropMenu.classList.toggle('hidden');
         })
-
 
         var notificationBtn = document.querySelector('#notificationBtn');
         var NotificationList = document.querySelector('#NotificationList');
