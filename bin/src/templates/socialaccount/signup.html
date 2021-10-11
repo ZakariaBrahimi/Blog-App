@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<div class="container max-w-full mx-auto md:py-16 px-6">
+    <div class=" mx-auto px-6">
+          <div class="relative flex flex-wrap">
+              <div class="w-full relative">
+
+
+
+    <h1 class="text-center font-semibold text-black text-3xl">{% trans "Sign Up" %}</h1>
+    <div class="my-4 m-auto w-2/6 bg-green-200 rounded-lg p-4 flex flex-col items-center justify-center">
+<p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your {{provider_name}} account to login to
+{{site_name}}. As a final step, please complete the following form:{% endblocktrans %}</p>
+</div>
+<form class="signup flex flex-col justify-center items-center" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+    <div class="mx-auto max-w-lg ">
+    {% csrf_token %}
+    {% for field in form %}
+    <span class="px-1 text-sm text-gray-600">
+    {{field.label}}
+  </span>
+  <div class="my-2">
+    {{field}}
+  </div>
+    {%endfor%}
+
+  </div>
+
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+
+  <button class="bg-blue-500 rounded-lg text-white p-2 px-4 mt-4 font-bold" type="submit">{% trans "Sign Up" %} &raquo;</button>
+</form>
+ </div>
+          </div>
+    </div></div>
+{% endblock %}
+
+{% block extra_body%}
+<script type="text/javascript">
+
+  let emailInput = document.getElementById('id_email');
+  emailInput.classList = "text-md block px-3 py-2 rounded-lg bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
+  let usernameInput = document.getElementById('id_username');
+  usernameInput.classList = "text-md block px-3 py-2 rounded-lg bg-white border-2 border-gray-300 placeholder-gray-600 shadow-md focus:placeholder-gray-500 focus:bg-white focus:border-gray-600 focus:outline-none"
+</script>
+{%endblock%}

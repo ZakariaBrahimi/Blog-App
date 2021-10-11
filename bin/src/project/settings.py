@@ -168,7 +168,7 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'facebook':
        {'METHOD': 'oauth2',
-        'SCOPE': ['email','public_profile', 'user_friends'],
+        'SCOPE': ['email','public_profile',],
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
         'FIELDS': [
             'id',
@@ -215,3 +215,5 @@ EMAIL_HOST_PASSWORD = 'SG.QyCTN7zcQQu-rtVRq5fwbQ.I6niS2qGijJAXEqiCAT0NWBLc3FtIYF
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+SECURE_SSL_REDIRECT = False

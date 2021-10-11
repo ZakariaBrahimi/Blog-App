@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+
+{% block content %}
+<div class="container max-w-full mx-auto md:py-16 px-6">
+    <div class=" mx-auto px-6">
+          <div class="relative flex flex-wrap">
+              <div class="w-full relative">
+                
+    <h1 class="text-center font-semibold text-black text-3xl">{% trans "Verify Your E-mail Address" %}</h1>
+    <div class="my-4 m-auto w-2/6 bg-green-200 rounded-lg p-4 flex flex-col items-center justify-center">
+    <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided on your email to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
