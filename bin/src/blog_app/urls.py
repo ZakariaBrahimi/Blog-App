@@ -6,7 +6,8 @@ from django.views.decorators.csrf import csrf_exempt  #This decorator marks a vi
 app_name = 'blog_app'
 urlpatterns = [
     url(r'^$', views.HomePage, name='home_page'),
-    url(r'^posts/(?P<visible>\d+)/$', views.PostJsonListView.as_view(), name='posts'),
+    #url(r'^posts/(?P<visible>\d+)/$', views.PostJsonListView.as_view(), name='posts'),
+    url(r'^posts/(?P<visible>\d+)/$', views.PostJsonListView1, name='posts'),
     url(r'^singl-post/(?P<slug>[-\w]+)/$', views.singlPost, name='singl_post'),
     url(r'^profile/(?P<userID>\d+)/$', views.userProfile, name='user_profile'),
     url(r'^create-post/$', views.creatPost, name='create_post'),

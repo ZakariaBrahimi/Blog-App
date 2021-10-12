@@ -83,7 +83,6 @@
     
     <script>
         const dataArr = JSON.parse('{{jsonPosts| escapejs}}')
-        console.log(dataArr)
         let finalData = []
         // http://127.0.0.1:8000/singl-post/444/
         let url = `/singl-post/${dataArr[0]['fields']['slug']}`

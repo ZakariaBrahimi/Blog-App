@@ -47,20 +47,30 @@ def upload_file_view(request):
     return JsonResponse({'success': 1, 'file': {'url': fileUrl}})
 
 def HomePage(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all()[:4]
     context = {
     'posts': posts,
     }
     searchBar(context)
     return render(request, 'home.html', context)
-
+#=================================================================================================================================================
 class PostJsonListView(View):
     def get(self, *args, **kwargs):
-        print(args)
-        posts = Post.objects.all()
+        if self.request.is_ajax():
+            print(args)
+            posts = Post.objects.all()
+            data = serializers.serialize('json', posts)
+            return JsonResponse({'data': data}, safe=False)
+        
+def PostJsonListView1(request, visible):
+    upper = int(visible) #4
+    lower = upper-4 #0
+    if request.is_ajax():
+        posts = Post.objects.all()[lower+1:upper]
+        print(posts)
         data = serializers.serialize('json', posts)
         return JsonResponse({'data': data}, safe=False)
-
+#=================================================================================================================================================
 def CommentNotification(sender_username, recipient_id):
     sender = Author.objects.get(username=sender_username)
     recipient = Author.objects.get(id=recipient_id)
