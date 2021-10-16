@@ -7,8 +7,6 @@ from django.views.generic import TemplateView, View
 from django.views.decorators.csrf import requires_csrf_token
 from django.core.files.storage import FileSystemStorage
 from notifications.signals import notify
-from django.template import Context, Template
-from django.template.loader import render_to_string
 from allauth.account.views import SignupView
 # class HomePage(TemplateView):
 #     template_name = 'home.html'
@@ -46,31 +44,33 @@ def upload_file_view(request):
     fileUrl = fs.url(file)
     return JsonResponse({'success': 1, 'file': {'url': fileUrl}})
 
+def totalLikes(request, postID):
+    if request.is_ajax():
+        post = get_object_or_404(Post, id=postID)
+        post.likes.add(request.user)
+        totalLikes = post.totalLikes()
+        #data = serializers.serialize('json', totalLikes)
+        print(totalLikes)
+        print(type(totalLikes))
+        return JsonResponse({'data': totalLikes}, safe=False)
+
 def HomePage(request):
+    #totalLikes(request, request.POST.get('class'))
     posts = Post.objects.all()[:4]
     context = {
     'posts': posts,
     }
     searchBar(context)
     return render(request, 'home.html', context)
-#=================================================================================================================================================
-class PostJsonListView(View):
-    def get(self, *args, **kwargs):
-        if self.request.is_ajax():
-            print(args)
-            posts = Post.objects.all()
-            data = serializers.serialize('json', posts)
-            return JsonResponse({'data': data}, safe=False)
         
-def PostJsonListView1(request, visible):
+def addMoreBtnView(request, visible):
     upper = int(visible) #4
     lower = upper-4 #0
     if request.is_ajax():
         posts = Post.objects.all()[lower+1:upper]
-        print(posts)
         data = serializers.serialize('json', posts)
         return JsonResponse({'data': data}, safe=False)
-#=================================================================================================================================================
+    
 def CommentNotification(sender_username, recipient_id):
     sender = Author.objects.get(username=sender_username)
     recipient = Author.objects.get(id=recipient_id)

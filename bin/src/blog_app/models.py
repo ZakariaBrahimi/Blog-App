@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
-from django_editorjs import EditorJsField
-
 
 class Author(AbstractUser):
     img = models.ImageField(default='avatar7.png', upload_to='user_imgs', null=True, blank=True)
@@ -25,8 +23,11 @@ class Post(models.Model):
     content = models.TextField()
     published_at = models.DateTimeField(auto_now_add=True)
     # comment_id = models.ForeignKey(to='Comment', on_delete=models.CASCADE, blank=True, null=True)
-    like_id = models.ForeignKey(to='Like', on_delete=models.CASCADE, blank=True, null=True)
+    #like_id = models.ForeignKey(to='Like', on_delete=models.CASCADE, blank=True, null=True)
     # totalComments = user.comment_set.all()
+    likes = models.ManyToManyField(Author, related_name='blog_post', blank=True, null=True)
+    def totalLikes(self):
+        return self.likes.count()
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title, allow_unicode=True)
         super(Post, self).save(*args, **kwargs)
@@ -42,11 +43,9 @@ class Comment(models.Model):
     def __str__(self):
         return f"commented by {self.user_id.first_name} on {self.post_id.title}'s post"
 
-class Like(models.Model):
-    user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)
-    post_id = models.ForeignKey(to='Post', on_delete=models.CASCADE)
-    # status  = models.BoleinField()
-    # a = [1,'a', True, ]
-    
+#class Like(models.Model):
+#    user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)
+#    post_id = models.ForeignKey(to='Post', on_delete=models.CASCADE)
+
 class Followers(models.Model):
     user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)

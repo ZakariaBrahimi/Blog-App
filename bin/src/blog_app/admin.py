@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin 
-from .models import Author, Comment, Followers, Like, Post
+from .models import Author, Comment, Followers, Post
 """
     from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -32,5 +32,4 @@ class PostList(admin.ModelAdmin):
 admin.site.register(Author, UserAdmin)
 admin.site.register(Comment)
 admin.site.register(Followers)
-admin.site.register(Like)
 admin.site.register(Post, PostList)
