@@ -22,16 +22,12 @@ class Post(models.Model):
     img = models.ImageField(upload_to='notes_img')
     content = models.TextField()
     published_at = models.DateTimeField(auto_now_add=True)
-    # comment_id = models.ForeignKey(to='Comment', on_delete=models.CASCADE, blank=True, null=True)
-    #like_id = models.ForeignKey(to='Like', on_delete=models.CASCADE, blank=True, null=True)
-    # totalComments = user.comment_set.all()
-    likes = models.ManyToManyField(Author, related_name='blog_post', blank=True, null=True)
+    likes = models.ManyToManyField(Author, related_name='blog_posts', blank=True)
     def totalLikes(self):
         return self.likes.count()
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title, allow_unicode=True)
         super(Post, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.title
 
@@ -42,10 +38,6 @@ class Comment(models.Model):
     content = models.TextField()
     def __str__(self):
         return f"commented by {self.user_id.first_name} on {self.post_id.title}'s post"
-
-#class Like(models.Model):
-#    user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)
-#    post_id = models.ForeignKey(to='Post', on_delete=models.CASCADE)
 
 class Followers(models.Model):
     user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)

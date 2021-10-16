@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^edit-profile/(?P<userID>\d+)/$', views.editProfile, name='edit_profile'),
     url(r'^fileUPload/$', csrf_exempt(views.upload_file_view)),
     url(r'^imageUPload/$', csrf_exempt(views.upload_image_view)),
-    url(r'^totalLikes/(?P<postID>\d+)/$', views.totalLikes, name='total_likes')    
+    url(r'^totalLikes/(?P<postID>\d+)/$', views.totalLikes, name='total_likes'),
 ]

@@ -43,19 +43,47 @@ def upload_file_view(request):
     file = fs.save(fileName, f)
     fileUrl = fs.url(file)
     return JsonResponse({'success': 1, 'file': {'url': fileUrl}})
+"""
+{'id': 13,
+'password': '!VfZM1z4crL9Xd4jEUtOGWmJEFYm3Wtd74MkltaCV',
+'last_login': datetime.datetime(2021, 10, 15, 18, 49, 2, 752899, tzinfo=<UTC>),
+'is_superuser': False,
+'username': 'zakaria_abdessamed',
+'first_name': 'Zakaria Abdessamed ', 'last_name': 'BRAHIMI', 'email': 'za.brahimi@etu.univ-batna2.dz',
+'is_staff': False, 'is_active': True, 'date_joined': datetime.datetime(2021, 10, 11, 13, 55, 15, 536311, tzinfo=<UTC>), 'img': 'avatar7.png', 'job': '', 'address': '', 'website_link': '', 'github_link': None, 'fb_link': None, 'insta_link': None, 'twitter_link': None, 'phone': None}
+"""
 
+"""
+    <QuerySet [{'id': 1}, {'id': 13}]>
+    14
+    
+    [{'id': 1}, {'id': 13}]
+    """
 def totalLikes(request, postID):
+    print(postID)
     if request.is_ajax():
         post = get_object_or_404(Post, id=postID)
-        post.likes.add(request.user)
+        userLikedList = list(post.likes.values('id'))
+        result = list()
+        for userID in userLikedList:
+            result.append(userID['id'])
+        if request.user.id in result:
+            post.likes.remove(request.user)
+            status = 'unlike'
+        else:
+            post.likes.add(request.user)
+            status = 'like'
         totalLikes = post.totalLikes()
-        #data = serializers.serialize('json', totalLikes)
-        print(totalLikes)
-        print(type(totalLikes))
+        return JsonResponse({'data': totalLikes, 'status': status}, safe=False)
+
+def removeLike(request, postID):
+    if request.is_ajax():
+        post = get_object_or_404(Post, id=postID)
+        post.likes.remove(request.user)
+        totalLikes = post.totalLikes()
         return JsonResponse({'data': totalLikes}, safe=False)
 
 def HomePage(request):
-    #totalLikes(request, request.POST.get('class'))
     posts = Post.objects.all()[:4]
     context = {
     'posts': posts,
@@ -78,7 +106,6 @@ def CommentNotification(sender_username, recipient_id):
     notify.send(sender=sender, recipient=recipient, verb='Comment Notification', description=message)
 
 def singlPost(request, slug):
-    # print(request.user.notifications.unread())
     post = get_object_or_404(Post, slug=slug)
     form = CommentForm()
     comments = Comment.objects.filter(post_id=post)

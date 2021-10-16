@@ -16,15 +16,19 @@
                 <div class="">
                     <span class="border-r-2 px-4">{{post.published_at|date:"D, d M, Y"}}</span>
                         
-                            <form action="" method='POST' id='likeForm' class="{{post.id}}">
+                            <form action="" method='POST' class="{{post.id}} likeForm">
                                 {% csrf_token %}
                                 <span class="border-r-2 px-4" >
                                     <button type="submit" id="likeBtn" name='post_id' value="{{post.id}}">
-                                        <svg id="likeBtn" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                                        </svg>
+                                        <div id="svg">
+                                          <svg id='{{post.id}}' xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                          </svg>
+                                        </div>
+                                        
+                                        
                                     </button>
-                                    <span id="totalLikes">{{post.totalLikes}}</span>
+                                    <span id="{{post.id}}">{{post.totalLikes}}</span>
                                 
                                 </span>
                             </form>
@@ -47,7 +51,7 @@
 
         
     </main>
-    <div class='flex flex-col items-center justify-center gap-4'>
+    <div id="morePosts" class='flex flex-col items-center justify-center gap-4'>
         <button class="bg-blue-500 p-2 px-4 rounded-lg shadow-lg flex text-white font-bold" type="button" id='loadMoreBtn'>More Posts</button>            
     </div>
     {% if  user.is_authenticated %}
@@ -108,7 +112,7 @@ let displayDate = (date)=>{
 const postBox = document.querySelector('#postBox');
 const continair = document.querySelector('#box')
 const loadMoreBtn = document.querySelector('#loadMoreBtn');
-//let lastChild = continair.lastElementChild.getAttribute('id');
+const morePosts = document.querySelector('#morePosts')
 let visible = 4
 const handlgetData = ()=> {
     fetch("/posts/"+ visible,
@@ -122,7 +126,10 @@ const handlgetData = ()=> {
     }).then(function(response){
       const data = response.data // ===>> string
       let instance = JSON.parse(response["data"]); // ===>> object
-      //console.log(instance)
+      console.log(instance.length)
+      if (instance.length === 0){
+        morePosts.innerHTML = `<h2>There are no more posts</h2>`
+      }
       instance.map(post => {
         let date = displayDate(post['fields']['published_at'])
         continair.innerHTML += `
@@ -172,33 +179,60 @@ const handlgetData = ()=> {
 })}
 //handlgetData();
 loadMoreBtn.addEventListener('click', (e)=>{
-    e.preventDefault();    
+    e.preventDefault();
     visible += 3
     handlgetData();
-    console.log('clicked')
 });
 
 // ===============================Like Ajax request handling ========================================
-/*
-url = 'localhost/likes/postID'
-1. Create likeView(request)
-    a. return an json response contains the followins json data {total likes}
-2. Request data from the above url 
-    a. fetching data on javascript and then display it on HTML
+//let likeForm = document.getElementById('likeForm')
 
-*/
+let likeForm = document.getElementsByClassName('likeForm')
+//=====================================================================================
+console.log(Object.values(likeForm).forEach(form=>{
+  console.log(form.childNodes[3].childNodes[1].childNodes[1])
 
-const likeBtn = document.getElementById('likeBtn')
+}))
+//=====================================================================
 
-const likeForm = document.getElementById('likeForm')
-const totalLikes = document.getElementById('totalLikes')
-//let hiddenInput = document.getElementById('hiddenInput')
-likeForm.addEventListener('submit', (e)=>{
+window.onload = ()=>{
+  Object.values(likeForm).forEach(form=>{
+    let svg = form.childNodes[3].childNodes[1].childNodes[1]
+    let svgPostID = parseInt(form.childNodes[3].childNodes[1].childNodes[1].childNodes[1].id)
+    if (window.localStorage.getItem(`status/${svgPostID}`) == 'like'){
+    
+      svg.innerHTML = `
+      <svg  xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+    </svg>
+          `
+    }else{
+      svg.innerHTML = `
+      <svg  xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      </svg>
+      `
+    }
+  })
+  
+}
+  
+
+
+
+//=========================================================================
+//console.log(typeof(Object.values(likeForm)))
+
+Object.values(likeForm).forEach(form=>{
+  form.addEventListener('submit', (e)=>{
     e.preventDefault();
-    let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-    let postID = likeBtn.getAttribute('value')
-    print(postID)
-    console.log('submited')
+    console.log(typeof(parseInt(e.target.children[1].childNodes[3])))
+    let csrfValue = e.target[0].attributes[2].value;
+    let totalLikes = e.target.children[1].childNodes[3]
+    //let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value
+    //console.log(typeof(csrfValue))
+    let postID = parseInt(e.target[1].attributes[3].value)
+    console.log(postID)
       fetch(`totalLikes/${postID}/`, {
         method: "Post",
         headers: {
@@ -208,13 +242,35 @@ likeForm.addEventListener('submit', (e)=>{
       }).then(function(response) {
         return response.json();
       }).then(function(response) {        
-        let instance = JSON.parse(response["data"]);
-        console.log(instance)
-        totalLikes.innerHTML = instance
+        let data = JSON.parse(response["data"]);
+        let svg = e.target[1].childNodes[1];
+        //console.log(svg)
+        //console.log(e.target[1].childNodes[1])
+  //=========================================================================
+  //window.localStorage.setItem("status", `${response['status']}/${postID}`);
+  window.localStorage.setItem(`status/${postID}`, response['status'])
+  //=========================================================================
+        if (response['status'] === 'like'){
+          svg.innerHTML = `
+          <svg  xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+        </svg>
+          `
+        }else{
+          svg.innerHTML = `
+          <svg  xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          `
+        }
+        totalLikes.innerHTML = data
       }).catch((error) => {
         console.error("Error", error);
       })
+  })
 })
+
+
 
 </script>
 {%endblock%}
