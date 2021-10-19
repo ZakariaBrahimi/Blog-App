@@ -8,8 +8,7 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.core.files.storage import FileSystemStorage
 from notifications.signals import notify
 from allauth.account.views import SignupView
-# class HomePage(TemplateView):
-#     template_name = 'home.html'
+from django.contrib.auth.decorators import login_required
 
 
 class CustomSignupView(SignupView):
@@ -43,22 +42,37 @@ def upload_file_view(request):
     file = fs.save(fileName, f)
     fileUrl = fs.url(file)
     return JsonResponse({'success': 1, 'file': {'url': fileUrl}})
-"""
-{'id': 13,
-'password': '!VfZM1z4crL9Xd4jEUtOGWmJEFYm3Wtd74MkltaCV',
-'last_login': datetime.datetime(2021, 10, 15, 18, 49, 2, 752899, tzinfo=<UTC>),
-'is_superuser': False,
-'username': 'zakaria_abdessamed',
-'first_name': 'Zakaria Abdessamed ', 'last_name': 'BRAHIMI', 'email': 'za.brahimi@etu.univ-batna2.dz',
-'is_staff': False, 'is_active': True, 'date_joined': datetime.datetime(2021, 10, 11, 13, 55, 15, 536311, tzinfo=<UTC>), 'img': 'avatar7.png', 'job': '', 'address': '', 'website_link': '', 'github_link': None, 'fb_link': None, 'insta_link': None, 'twitter_link': None, 'phone': None}
-"""
 
-"""
-    <QuerySet [{'id': 1}, {'id': 13}]>
-    14
+def favoriteList(request):
+    user = request.user
+    favoriteList = user.favorites.all()
+    print(favoriteList)
+    context = {
+        'favoriteList': favoriteList,
+    }
+    return render(request, 'bookmarksList.html', context)
     
-    [{'id': 1}, {'id': 13}]
-    """
+def favoriteView(request, postID):
+    if request.is_ajax():
+        author = request.user
+        post = get_object_or_404(Post, id=postID)
+        result = []
+        for post in list(author.favorites.values()):
+            result.append(post['id'])
+        if int(postID) in result:
+            print('removing')
+            status = 'unbooked'
+            author.favorites.remove(postID)
+        else:
+            status = 'booked'
+            print('adding')
+            author.favorites.add(postID)
+        favoriteList = author.favoriteList()
+        print(favoriteList)
+        return JsonResponse({'favoriteList': favoriteList, 'status': status}, safe=False)
+
+
+
 def totalLikes(request, postID):
     print(postID)
     if request.is_ajax():
@@ -190,5 +204,8 @@ def editProfile(request, userID):
 
 def searchBar(context):
     posts = Post.objects.all()
+    users = Author.objects.all()
     jsonPosts = serializers.serialize('json', posts)
+    jsonUsers = serializers.serialize('json', users)
     context['jsonPosts'] = jsonPosts
+    context['jsonUsers'] = jsonUsers

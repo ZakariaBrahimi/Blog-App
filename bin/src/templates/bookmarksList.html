@@ -2,7 +2,7 @@
 {% block content%}
 <div class="flex flex-col gap-12 my-12">
     <main id="box" class="flex flex-col gap-6 h-5/6 w-8/12 m-auto" >
-        {% for post in posts %}
+        {% for post in favoriteList %}
         <article id="{{forloop.counter}}" class="bg-white p-6 flex flex-col gap-4 shadow-lg rounded-lg post" id='postBox'>
             <img src="{{post.img.url}}" class=""  alt="">
             <h1 class="text-gray-900 text-xl">{{post.title}}</h1>
@@ -47,16 +47,10 @@
                                   </svg>
                                 </div>
                             </button>
-                            <!-- <span id="{{post.id}}">{{request.user.favoriteList}}</span> -->
                         
                         </span>
                     </form>
-                      
-                      <!--
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-</svg>
-                      -->
+
                     </span>
                     {%endif%}
                 </div>
@@ -71,14 +65,6 @@
     <div id="morePosts" class='flex flex-col items-center justify-center gap-4'>
         <button class="bg-blue-500 p-2 px-4 rounded-lg shadow-lg flex text-white font-bold" type="button" id='loadMoreBtn'>More Posts</button>            
     </div>
-    {% if  user.is_authenticated %}
-    <aside class=" flex flex-col items-center p-6 bg-white h-full w-3/12 rounded-lg mr-6 shadow-lg ">
-        <a href=" {% url 'blog:create_post' %} ">
-            <button id="createPostBtn" class="bg-blue-500 p-2 px-24 shadow-2xl rounded-lg text-white hover:shadow-4xl font-bold" type="submit">New Post</button>
-            
-        </a>
-    </aside>
-    {% endif%}
 </div>
 {%endblock%}
 {%block bottom_js%}

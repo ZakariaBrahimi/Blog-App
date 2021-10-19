@@ -200,15 +200,10 @@ function deletePost(e){
     ).then(function(response){
       window.location.href = window.location.origin
     })
-  
 }
-
 const deleteForm = document.querySelector("#deleteForm");
 const deleteBtn = document.querySelector("#deleteBtn");
 deleteForm.addEventListener('submit', deletePost);
-
-
-
 
 const convertToMonth = (month)=>{
   switch (month){
@@ -220,6 +215,9 @@ const convertToMonth = (month)=>{
       break;
     case "09":
       return 'Sept';
+      break;
+      case "10":
+      return 'Oct';
       break;
   }
 }
@@ -247,7 +245,6 @@ const displayDate = (date)=>{
   let result = `${month}. ${day}, ${year}, ${time}`;
   return result
 }
-
   function createComment(formData){
     console.log("Posting Comment");
     let csrfValue = document.getElementsByName("csrfmiddlewaretoken")[0].value;
@@ -261,8 +258,7 @@ const displayDate = (date)=>{
     }).then(function(response) {
       return response.json();
     }).then(function(data) {
-      commentForm.reset();
-      
+      commentForm.reset();  
       let instance = JSON.parse(data["newComment"]);
       console.log(instance)
       let fields = instance[0]["fields"];

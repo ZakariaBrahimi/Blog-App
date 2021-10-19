@@ -82,20 +82,28 @@
     </div>
     
     <script>
-        const dataArr = JSON.parse('{{jsonPosts| escapejs}}')
+        const dataArr = '{{jsonPosts| escapejs}}'
+        console.log(dataArr)
+        //let posts = JSON.parse('{{jsonPosts| escapejs}}')
+        //JSON.parse('{{jsonUsers| escapejs}}')
+        //let users = ['zakaria']
+        //let dataArr = posts.concat(users)
+        //console.log(dataArr)
         let finalData = []
+        
         // http://127.0.0.1:8000/singl-post/444/
         let url = `/singl-post/${dataArr[0]['fields']['slug']}`
         dataArr.map(function (item) {finalData.push(item['fields']['title'])})
         const autoCompleteJS = new autoComplete({
             selector: "#autoComplete",
-            placeHolder: "Search for Posts...",
+            placeHolder: "Search for Posts or Users...",
             data: {
                 src: finalData,
                 cache: true,
             },
             resultsList: {
                 element: (list, data) => {
+                    console.log(data)
                     const info = document.createElement("p");
                     if (data.results.length > 0) {
                         info.innerHTML = `Displaying <strong>${data.results.length}</strong> out of <strong>${data.matches.length}</strong> results`;

@@ -12,6 +12,10 @@ class Author(AbstractUser):
     insta_link = models.URLField(blank=True, null=True)
     twitter_link = models.URLField(blank=True, null=True)
     phone = models.IntegerField(blank=True, null=True)
+    favorites = models.ManyToManyField('Post', related_name='favorite',default=None, blank=True)
+    followers = models.ManyToManyField('Author', blank=True)
+    def favoriteList(self):
+        return self.favorites.count()
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
@@ -38,6 +42,3 @@ class Comment(models.Model):
     content = models.TextField()
     def __str__(self):
         return f"commented by {self.user_id.first_name} on {self.post_id.title}'s post"
-
-class Followers(models.Model):
-    user_id = models.ForeignKey(to='Author', on_delete=models.CASCADE)
