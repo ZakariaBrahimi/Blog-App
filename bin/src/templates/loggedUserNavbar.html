@@ -82,18 +82,20 @@
     </div>
     
     <script>
+        function convertPostTitleToSlug(Text) {
+            return Text
+                       .toLowerCase()
+                       .replace(/ /g, '-')
+                       .replace(/[^\w-]+/g, '');
+          }
         const dataArr = '{{jsonPosts| escapejs}}'
-        console.log(dataArr)
-        //let posts = JSON.parse('{{jsonPosts| escapejs}}')
-        //JSON.parse('{{jsonUsers| escapejs}}')
-        //let users = ['zakaria']
-        //let dataArr = posts.concat(users)
-        //console.log(dataArr)
+        rdata = JSON.parse(dataArr);
+        console.log(typeof(rdata))
         let finalData = []
         
         // http://127.0.0.1:8000/singl-post/444/
-        let url = `/singl-post/${dataArr[0]['fields']['slug']}`
-        dataArr.map(function (item) {finalData.push(item['fields']['title'])})
+        //let url = `/singl-post/${rdata[0]['fields']['slug']}`
+        rdata.map(function (item) {finalData.push(item['fields']['title'])})
         const autoCompleteJS = new autoComplete({
             selector: "#autoComplete",
             placeHolder: "Search for Posts or Users...",
@@ -118,8 +120,7 @@
             },
             resultItem: {
                 element: (item, data) => {
-                    console.log(data['value'])
-                    let url = `/singl-post/${data['value']}`
+                    let url = `/singl-post/${convertPostTitleToSlug(data['value'])}`
                 // Modify Results Item Style
                     item.style = "display: flex; justify-content: space-between;";
                 // Modify Results Item Content
@@ -136,7 +137,6 @@
                     selection: (event) => {
                         const selection = event.detail.selection.value;
                         autoCompleteJS.input.value = selection;
-                        console.log(selection)
                         
                     }
                 }

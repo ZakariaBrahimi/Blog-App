@@ -76,7 +76,7 @@
                 <div class="text-gray-800 w-3/6">Address</div>
                 <div class="text-gray-500">{{author.address}}</div>
             </div>
-            {% if user.authenticated %}
+            {% if request.user.id == author.id %}
             <a href="{% url 'blog:edit_profile' author.id %}">
               <button type="submit" class="p-2 bg-blue-500 rounded-lg px-5 text-white m-4 ml-10 shadow-lg hover:shadow-2xl">Edit My Profile</button>
             </a>
@@ -116,7 +116,8 @@
                 </svg>
               </div>
               <div>
-                {% if user.is_authenticated %} 
+                {% if user.is_authenticated %}
+                {% if request.user.id == author.id %}
                 <a href='{% url "blog:favorite_list" %}' class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
                   saved Posts
                 </a>
@@ -124,6 +125,7 @@
                 <p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
                   saved Posts
                 </p>
+                {%endif%}
                 {%endif%}
                 <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
                   {{user.favoriteList}}

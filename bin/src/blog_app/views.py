@@ -168,13 +168,17 @@ def creatPost(request):
 
 def editPost(request, slug , postID):
     instance = get_object_or_404(Post, slug=slug, id=postID)
-    if request.method == 'POST':
-        form = EditPostForm(request.POST or None, request.FILES or None, instance=instance)
-        if form.is_valid():
-            form.save()
-            return redirect('blog:singl_post', instance.slug)
+    form = EditPostForm(instance=instance)
+    if request.user.is_authenticated and request.user.id == instance.user.id:
+        if request.method == 'POST':
+            form = EditPostForm(request.POST or None, request.FILES or None, instance=instance)
+            if form.is_valid():
+                form.save()
+                return redirect('blog:singl_post', instance.slug)
+            else:
+                form = EditPostForm(instance=instance)    
     else:
-        form = EditPostForm(instance=instance)
+        return redirect('blog:singl_post', instance.slug)
     context = {
         'post': instance,
         'form': form,
@@ -188,14 +192,18 @@ def deletePost(request, slug, postID):
         post.delete()
         return HttpResponse({})
 
+@login_required(login_url='/accounts/login/')
 def editProfile(request, userID):
-    if request.method == 'POST':
-        form = EditProfileForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('blog:user_profile', userID)
-    else:
-        form = EditProfileForm(instance=request.user)
+    instance = get_object_or_404(Author, id=userID)
+    form = EditProfileForm(instance=request.user)
+    if request.user.is_authenticated and request.user.id == instance.id:
+        if request.method == 'POST':
+            form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+            if form.is_valid():
+                form.save()
+                return redirect('blog:user_profile', userID)
+            else:
+                form = EditProfileForm(instance=request.user)
     context = {
         'form': form,
     }
@@ -208,4 +216,4 @@ def searchBar(context):
     jsonPosts = serializers.serialize('json', posts)
     jsonUsers = serializers.serialize('json', users)
     context['jsonPosts'] = jsonPosts
-    context['jsonUsers'] = jsonUsers
+    # context['jsonUsers'] = jsonUsers

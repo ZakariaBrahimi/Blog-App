@@ -32,6 +32,7 @@
             </span>
         </div>
         {% if request.user.is_authenticated %}
+        {% if request.user.id == post.user.id %}
         <div>
           <div class="flex items-baseline">
             <a href="{% url 'blog:edit_post' post.slug post.id %}" class="shadow-lg bg-blue-600 text-white font-bold p-2 rounded-lg px-2">
@@ -113,6 +114,7 @@
           </div>
         </div>
         {%endif%}
+        {%endif%}
         </div>
         <p>
            {{post.content}}
@@ -173,7 +175,6 @@
           </div>
        </form>
     </div>
- <!-- </div> -->
     </article>
 {%endif%}
 {%endblock%}
