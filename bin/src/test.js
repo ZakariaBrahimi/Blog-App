@@ -5,6 +5,7 @@
  * 
  * Ex:
  * INPUTS:
+ *      
  *      n = 7
  *      ar = [1,2,1,2,1,3,2]
  * OUTPUT:
@@ -15,7 +16,7 @@
  *      The number of pairs is 2.
  * 
  * My Solution:
- *  1. make to pointers ==> one is for the first color 
+ *  1. make two pointers ==> one is for the first color 
  *                      ==> second is the other colors (lopping through all array)
  * 
  *  2. if we find a pair: ==> remove two of them from the array
@@ -23,11 +24,23 @@
  *                        ==> change the the  first pointer to the next element of array
  *                        ==> repeat the first step until the second pointer acheave to th last element of array
  * 
+ * 
+ * 
+ * reacto
+ * r => read 
+ * e => examples 
+ * a => brute force first
+ * c => code
+ * t => test you solution  correct
+ * o => omptimaze the solution 
+ * 
  */
 
  // n = 10
  // ar = [1,1,3,1,2,1,3,3,3,3]
  //       0 1 2 3 4 5 6 7 8 9
+
+
 
  function sockMerchant(n, ar) {
     let result = 0

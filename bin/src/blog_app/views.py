@@ -42,11 +42,35 @@ def upload_file_view(request):
     file = fs.save(fileName, f)
     fileUrl = fs.url(file)
     return JsonResponse({'success': 1, 'file': {'url': fileUrl}})
+# =================================================================================================
+
+def followingView(request, userID):
+    if request.is_ajax():
+        author = get_object_or_404(Author, id=request.user.id)
+        result = []
+        for user in list(author.followers.values()):
+            result.append(user['id'])
+            print(f'result ===>> {result}')
+        if int(userID) in result:
+            print('unfollowing')
+            status = 'unfollow'
+            author.followers.remove(userID)
+            print(f'unfollow result ===>> {result}')
+        else:
+            status = 'follow'
+            print('following')
+            author.followers.add(userID)
+            print(f'follow result ===>> {result}')
+        totalFollowers = author.totalFollowers()
+        print(totalFollowers)
+        return JsonResponse({'totalFollowers': totalFollowers, 'status': status}, safe=False)
+    
+# =================================================================================================
 
 def favoriteList(request):
     user = request.user
     favoriteList = user.favorites.all()
-    print(favoriteList)
+    
     context = {
         'favoriteList': favoriteList,
     }
@@ -56,6 +80,7 @@ def favoriteView(request, postID):
     if request.is_ajax():
         author = request.user
         post = get_object_or_404(Post, id=postID)
+        print(post.id in list(post.user.favorites.values('id')))
         result = []
         for post in list(author.favorites.values()):
             result.append(post['id'])
@@ -90,15 +115,10 @@ def totalLikes(request, postID):
         totalLikes = post.totalLikes()
         return JsonResponse({'data': totalLikes, 'status': status}, safe=False)
 
-def removeLike(request, postID):
-    if request.is_ajax():
-        post = get_object_or_404(Post, id=postID)
-        post.likes.remove(request.user)
-        totalLikes = post.totalLikes()
-        return JsonResponse({'data': totalLikes}, safe=False)
+
 
 def HomePage(request):
-    posts = Post.objects.all()[:4]
+    posts = Post.objects.all()[:] # Post.objects.all()[:4] ===>> for load more data ( loading by 4 posts)
     context = {
     'posts': posts,
     }
@@ -109,9 +129,20 @@ def addMoreBtnView(request, visible):
     upper = int(visible) #4
     lower = upper-4 #0
     if request.is_ajax():
+        allPosts = serializers.serialize('json', Post.objects.all())
+        # post = get_object_or_404(Post, id=postID)
         posts = Post.objects.all()[lower+1:upper]
+        # authors = posts.user
+        users = list(posts.values('user_id'))
+        result = list()
+        for userID in users:
+            result.append(userID['user_id'])
+        final_result = list(set(result))
+        for i in final_result:
+            users = Author.objects.filter(id=i)
         data = serializers.serialize('json', posts)
-        return JsonResponse({'data': data}, safe=False)
+        
+        return JsonResponse({'data': data, 'allPosts': allPosts}, safe=False)
     
 def CommentNotification(sender_username, recipient_id):
     sender = Author.objects.get(username=sender_username)

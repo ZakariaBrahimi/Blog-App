@@ -17,5 +17,6 @@ urlpatterns = [
     url(r'^imageUPload/$', csrf_exempt(views.upload_image_view)),
     url(r'^totalLikes/(?P<postID>\d+)/$', views.totalLikes, name='total_likes'),
     url(r'^favorite/(?P<postID>\d+)/$', views.favoriteView, name='total_likes'),
-    url(r'^bookmarks/$', views.favoriteList, name='favorite_list')
+    url(r'^bookmarks/$', views.favoriteList, name='favorite_list'),
+    url(r'^following/(?P<userID>\d+)/$', views.followingView, name='following'),
 ]

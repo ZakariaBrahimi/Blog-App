@@ -16,6 +16,8 @@ class Author(AbstractUser):
     followers = models.ManyToManyField('Author', blank=True)
     def favoriteList(self):
         return self.favorites.count()
+    def totalFollowers(self):
+        return self.followers.count()
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
